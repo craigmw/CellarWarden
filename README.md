@@ -46,7 +46,7 @@ client app is handled by Javascript.&nbsp;</p>
 <h2><br>
 <a id="user-content-web-app" class="anchor" href="#web-app" aria-hidden="true"><span class="octicon octicon-link"></span></a></h2>
 <h2>Web App</h2>
-<p><a href="https://github.com/craigmw/CellarWarden/blob/master/CellarWardenGrab.jpg"><img style="border: 0px solid ; width: 1000px; height: 685px;" alt="Cellar Warden Overview" src="MainSensors.jpg"></a><a href="https://github.com/craigmw/CellarWarden/blob/master/CellarWardenGrab.jpg" target="_blank"><br>
+<p><a href="https://github.com/craigmw/CellarWarden/blob/master/public/help/CellarWardenGrab.jpg"><img style="border: 0px solid ; width: 1000px; height: 685px;" alt="Cellar Warden Overview" src="/public/help/MainSensors.jpg"></a><a href="https://github.com/craigmw/CellarWarden/blob/master/public/help/CellarWardenGrab.jpg" target="_blank"><br>
 </a></p>
 <p>CellarWarden is a client/server application, with a Node.js
 server
@@ -60,7 +60,7 @@ chambers, etc. CellarWarden only requires a Raspberry Pi, and connects
 to such appliances via relay boards, with the relay boards driving the
 powering of these attached appliances. CellarWarden also provides
 controller profiles, a method to vary the setpoint for temperature or
-humidity over time. These profiles can be generated using a <a style="color: rgb(51, 255, 51);" href="help_profile.html">profile
+humidity over time. These profiles can be generated using a <a style="color: rgb(51, 255, 51);" href="/public/help/help_profile.html">profile
 editor</a>, and can be saved or loaded for re-use.</p>
 <p></p>
 <p>To
@@ -69,12 +69,12 @@ change configurations, controllers and alarm settings, a web based
 app is used. Shown is the web client application, with temperature and
 humidity data plotted over time. Also shown on the graph are
 annotations indicating alarm conditions that were triggered. These
-conditions can be set in <a style="color: rgb(51, 255, 51);" href="help_alarms.html">a dialog</a> opened by
+conditions can be set in <a style="color: rgb(51, 255, 51);" href="/public/help/help_alarms.html">a dialog</a> opened by
 clicking on the Alarms
 button. Alarm notifications are sent to specified email addresses,
 including those associated with cell phone/SMS accounts. CellarWarden
 also compresses older data, as can be configured under the Logging
-Option in the <a style="color: rgb(51, 255, 51);" href="help_config.html">Configure dialog</a>.
+Option in the <a style="color: rgb(51, 255, 51);" href="/public/help/help_config.html">Configure dialog</a>.
 Alternatively, CellarWarden can
 maintain data for a set period, deleting older data as time progresses
 in round-robbin fashion. These logging options prevent the log file
@@ -141,7 +141,7 @@ different RPi boards <a style="color: rgb(51, 255, 51);" href="http://pi.gadgeto
 </a></p>
 <h2>
 <a id="user-content-schematics" class="anchor" href="#schematics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Schematics</h2>
-<p><a href="https://github.com/craigmw/CellarWarden/blob/master/CellarWardenMin_bb.jpg" target="_blank"><img src="https://github.com/craigmw/CellarWarden/raw/master/CellarWardenMin_bb.jpg" style="max-width: 100%;"></a></p>
+<p><a href="https://github.com/craigmw/CellarWarden/blob/master/public/help/CellarWardenMin_bb.jpg" target="_blank"><img src="https://github.com/craigmw/CellarWarden/raw/master/public/help/CellarWardenMin_bb.jpg" style="max-width: 100%;"></a></p>
 <p>This is a relatively minimal setup involving one DHT22 to
 measure
 the cellar air temperature and humidity, a single DS18B20 One Wire
@@ -278,7 +278,7 @@ bus, so
 changing gpiopin to a different number should accomplish this. To save
 the changes to config.txt, press Ctrl-X, Y and Enter.</p>
 <p>If you intend to use an I2C-based LCD display or an I2C
-connected RTC board, see the <a style="color: rgb(51, 255, 51);" href="help_hardware.html">Hardware Examples</a> page
+connected RTC board, see the <a style="color: rgb(51, 255, 51);" href="/public/help/help_hardware.html">Hardware Examples</a> page
 for more details about how to set up and configure these devices.</p>
 <p></p>
 <p>Now, reboot the RPi by issuing the following command:</p>
@@ -343,7 +343,7 @@ connectivity, an RTC board may be connected to the RPi via its I2C
 pins. Adafruit offers a <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/product/264">DS1307-based I2C RTC board</a>
 in kit form that requires minimal soldering and can be directly
 connected to the RPi's 3.3V line and I2C pins without the need for logic level
-shifters. More information about this is included in the <a style="color: rgb(51, 255, 51);" href="help_hardware.html">Hardware Examples page</a> and is also available <a style="color: rgb(51, 255, 51);" href="https://learn.adafruit.com/adding-a-real-time-clock-to-raspberry-pi">here</a>.</p><h2><br></h2><h2>Email/SMS Alarms</h2>
+shifters. More information about this is included in the <a style="color: rgb(51, 255, 51);" href="/public/help/help_hardware.html">Hardware Examples page</a> and is also available <a style="color: rgb(51, 255, 51);" href="https://learn.adafruit.com/adding-a-real-time-clock-to-raspberry-pi">here</a>.</p><h2><br></h2><h2>Email/SMS Alarms</h2>
 <p>CellarWarden can send alarm notifications to specified email
 addresses if conditions are set in the Alarms dialog. For emails and
 SMS messages, it is necessary to provide an email account name and

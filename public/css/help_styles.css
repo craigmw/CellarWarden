@@ -1,0 +1,28 @@
+html { 
+    //background: url("../background.jpg") no-repeat center center fixed; 
+    /* background: url("../background.jpg") center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover; */
+    background-color: #000000;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    width:980px;
+    font-size: 24px;
+}
+
+h1 {
+    color: #ffffff;
+    font: 40px arial, sans-serif;
+}
+
+h2 {
+    color: #47C2FF;
+    font: 32px arial, sans-serif;
+}
+
+p {
+    font: 20px arial, sans-serif;
+    color: #ffffff;
+}

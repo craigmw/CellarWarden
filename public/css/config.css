@@ -1,0 +1,197 @@
+/* Config dialog styles */
+.config-display {
+    float: left;
+    color: #fff;
+    font-size: 10px;
+}
+
+.config-dialog .ui-widget-content { 
+    border: none; 
+    background: none; 
+}
+
+.config-dialog .ui-widget-header { 
+    border: none; 
+    background: none; 
+}
+
+.config-dialog .ui-tabs .ui-tabs-panel {
+    background: #000000; 
+    height: 340px;
+    overflow: auto;
+    /* border: 1px solid #38402D; 
+    position: relative;
+    min-height: 280px;
+    height: auto !important;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -khtml-border-radius: 10px;
+    border-radius: 10px;
+    padding-top: 20px; */
+}
+
+.cfg-container {
+    font-size: 14px
+}
+
+.cfgFieldDiv {
+    display: table;
+    border: 1px solid #333333;
+    color: white;
+    border-radius: 4px;
+    background-color: #222222;
+    margin-top: 10px;
+    margin-left: 12px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+}
+
+.cfgLegend {
+    padding: 0.2em 0.5em;
+    border: 1px solid white;
+    color: #00ff00;
+    font-size:100%;
+    text-align:left;
+    border-radius: 4px;
+    background-color: #444444;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    font-weight: bold;
+
+}
+
+.cfgGeneral {
+}
+
+#cfgGen1ID {
+    float: left;
+}
+
+#cfgGen2ID {
+    float: right;
+}
+
+.textarea {
+    font-size: 8px;
+    font-family: arial narrow;  
+    //font-family: '5x8LCDHD44780UA02Regular', monospace;
+   
+}
+
+.cfgServerLogWindow {
+    float: left;
+    width: 550px;
+    height: 280px;
+    background: #000000;
+    color: #ffffff;
+    /* box-shadow: inset 1px 1px 5px #EEEEEE;
+    border: 2px solid #333;
+    border-radius: 8px; */
+}
+ 
+.cfgPw {
+    /* color: #0000ff; */
+}
+ 
+#cfgDHT-containerID {
+    float: left;
+    //height: 260px;
+    /*padding: 10px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    border: 2px solid #333;
+    border-radius: 8px;*/
+    
+} 
+
+#cfgOneWire-containerID {
+    float: right;
+    overflow-x: scroll;
+    height: 780px;
+    //height: 260px;
+    /*
+    padding: 10px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    border: 2px solid #333;
+    border-radius: 8px;*/
+}
+
+.cfgOneWireDevices {
+    /* font-size: 10px;
+    color: #ffff00; */
+}
+
+#cfgCalibrateDhtID {
+    float: left;
+    width: 150px;
+}
+
+#cfgCalibrateOwID {
+    float: right;
+    width: 300px;
+}
+
+.cfgCalOW1 {
+    float: left;
+    width: 130px;
+}
+
+.cfgCalOW2 {
+    float: right;
+    width: 130px;
+}
+
+#cfgLogDiv1ID {
+    float: left;
+    /* height: 260px;
+    padding: 10px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    border: 2px solid #333;
+    border-radius: 8px; */
+}
+
+#cfgLogDiv2ID {
+    float: right;
+    /*height: 260px;
+    padding: 10px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    border: 2px solid #333;
+    border-radius: 8px;*/
+}
+
+
+#cfgLcd-containerID {
+    float: left;
+    /* height: 260px;
+    width: 360px;
+    padding: 10px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    border: 2px solid #333;
+    border-radius: 8px */
+}
+
+.cfgLcdDisplay1 {
+    float: left;
+    //width: 200px;
+    //height: 200px;
+    padding: 2px;
+}
+
+.cfgLcdDisplay2 {
+    float: right;
+    //width: 150px;
+    //height: 180px;
+    padding: 2px;
+} 
+
+#cfgDoors-containerID {
+    float: left;
+    /* height: 260px;
+    width: 200px;
+    padding: 10px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    border: 2px solid #333;
+    border-radius: 8px */
+}
+
+.cfgDoorsTitle {
+    float: center;
+}
+

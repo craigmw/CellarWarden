@@ -1,0 +1,53 @@
+ControllerMethods.txt - Methods used for controlling logic for controllers.
+
+1. main program loop: accesses ctrls.process() once per loop (roughly 4 seconds). 
+2. ctrls.process() is configured to do the following for each active controller:
+   a. Check if first time through loop (initialize)
+   b. Determine setpoint: use tprofiles if profile active, otherwise SP = endSP.
+   c. Compare input to setpoint. Determine if input needs to be raised to lowered to hit SP.
+   d. If PID is active, run through PID loop using heating or cooling parameters. Get output.
+   e. Check hysteresis values if set. If input > SP - coolHys, turn on heating. 
+      If input < SP + heatHys, turn on cooling.
+   f. If in hysteresis mode, fire heat or cool pin if no delay is active.
+   g. If in PID mode, use time proportioning window or direct PWM output.
+   h. Need to have calls to activate actuator pin check for any associated delay and
+      only activate that pin if delay time has elapsed.
+   i. Need to ensure that coolpin and heatpin are not activated at same time. This could be done
+      by checking to make sure that a heat pin is not currently active. If it is and cooling is
+      needed, shut off the heat pin before activating the cool pin.
+   j. Log the output status to logfile (along with time and setpoint). This is done by writing an
+      entry either for the heatpin or the coolpin. The value of this is: 20 if on, NaN if off.
+      For PID, this could represent the %output specified by the PID itself (e.g. output * 20).
+
+For time-proportioning:
+   For each actuator using time proportioning (tp), set up a setInterval timer that runs in
+the background. This timer function is set to turn on associated actuator pin
+(if no delay exists) and run until a proportion of tpWindow has elapsed. The pin is then
+set low. This change of state also activates a delay timer (if there is a delay set for 
+the actuator). Time proportioning itself works as follows. User specifies length for time window
+and a output level (from the PID) from 0 to 100%. The current time is saved as the start time
+for the time window. The tp routine then sets up a setInterval timer routine that checks the current 
+time vs. the start time. If the amount of elapsed time (current time vs. start time) >= the 
+output value (e.g. 50% of 600 second time window would be 300 seconds), the routine shuts off
+the associated actuator pin (and sets a delay if needed). The setInterval routine remains in 
+memory and is adjusted during the next loop. It remains actively looping indefinitely unless the
+controller is shut off (or parameters edited by the client), at which point, the setInterval routine is 
+cancelled (by storing its handle to the controller object). Note that the looping rate for the
+setInterval rate is important. If the timeWindow is long (say 600 seconds), then checking every 4
+seconds would be okay (600/4 = 150 different levels of output). However, if the interval is short, 
+checking every 4 seconds would not be sufficient for PID output. For example, if the time window 
+length is every 2 seconds, the looping rate on that actuator would need to be 200 ms for 10 levels of
+output. Under such rapid cycling, a delay would not make sense since this would likely be controlling
+an SSR output. So, should probably provide some way to set up the looping rate for long (say 120+
+seconds) vs. short (say 2 seconds) time windows. This could be done by just looking at the length
+of the time window. If it is longer than 60 seconds, just have it check once per second (or two). If
+it is short, have the loop rate set to 100 or 200 milliseconds. Perhaps also set 2 seconds as minimum
+time window length.  
+
+Delays:
+   To prevent short-cycling, a delay time (in minutes?) can be set. This delay is activated
+when the actuator pin transitions from on to off. This can be implemented using a de novo
+generated setTimeout function. During the setTimeout delay, the pin delay (will need to 
+specify heat or cool pin) function will flag the pin as waiting for end of delay. Once
+the delay time has elapsed, the timer function will set the waiting flag to false. This will
+allow subsequent calls to that actuator to fire.

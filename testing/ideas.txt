@@ -1,0 +1,23 @@
+/*
+        //Note about methods here. This dialog allows editing of multiple controller objects, so
+        //  a selectmenu is used to select correct ctrl object for editing. For adding new object,
+        //  'Add' button activates function that requests a new ctrl object from the server and concatenates this
+        //  onto the end of the array of objects using a push statement. Will also need to update the list of options
+        //  in the selectmenu. 
+        //  For deleting a selected ctrl object:
+        //  The 'Delete' button fires a function that disables the object associated with
+        //  the currently selected control. It needs to do so by supplying the index of the current
+        //  ctrl object. This needs to be disabled by setting the disable flag for that option to true.
+        //  This method has the advantage that the local ctrls copy is not shortened. Instead, the server
+        //  processes the deletion by checking for the ctrls[i].deleteFlag for true (set to true in client
+        //  delete function). In the server's updateCtrlsConfig() function, check all ctrl objects for
+        //  deleteFlag == true. When true, pop the array element (or fail to copy  it to a new ctrls array)
+        //  but need to be careful to update the other elements (replacing cfg variables only) BEFORE popping
+        //  the ctrl array elements flagged for deletion. Also, should turn off actuators associated
+        //  with deleted controllers to ensure that they don't remain active. 
+        //
+        //  To separate HTML from javascript, try this:
+        //  <script src="clientCtrls.js"></script> Probably not necessary here, but would help
+        //  for index.html.
+        */
+     

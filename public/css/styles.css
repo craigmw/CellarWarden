@@ -1,0 +1,547 @@
+@font-face {  
+    font-family: 'CPMono_v07_Plain', monospace; 
+    src: url('../font/CPMono_v07_Plain.otf') format('opentype'); 
+}
+
+/* body {
+    background-image: url("../background.jpg");
+    color: #fff;
+    font-family: 'CPMono_v07_Plain', Arial, sans-serif;
+    width:980px;
+    font-size: 12px;
+} */
+
+.tooltip {
+    
+}
+
+html { 
+    //background: url("../background.jpg") no-repeat center center fixed; 
+    background: url("../background.jpg") center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    color: #fff;
+    font-family: 'CPMono_v07_Plain', Arial, sans-serif;
+    width:980px;
+    font-size: 12px;
+}
+
+h1 {
+    color: #ffffff;
+    font: 36px arial, sans-serif;
+}
+
+h2 {
+    color: #0000ff;
+    font: 20px arial, sans-serif;
+}
+
+p {
+    font: 14px arial, sans-serif;
+    color: #ffeeff;
+}
+
+/* SelectMenu styles */
+.ui-dialog-buttonpane { 
+    vertical-align: bottom;
+}
+
+.ui-selectmenu-menu {
+
+    position: bottom;
+    height: 10px;
+    //font-size: 14px;
+    //color: #000000;
+}
+
+.ui-selectmenu-text {
+    //height: 16px;
+    //font-size: 14px;
+    //color: #66ff66;
+    color: #ffff00;
+}
+
+.ui-selectmenu-button {
+    vertical-align: bottom;
+}
+
+
+
+/* Set up banner on top */
+@font-face {
+    font-family: Papyrus,fantasy;
+    font-size: 24px;
+    font-style: normal;
+    font-variant: normal;
+    font-weight: 500;
+    line-height: 26.4px;
+}
+
+.banner-container {
+        width: 998px;
+	height: 134px; // 102px;
+	float: left;
+        padding: 4px;
+	margin: 4px 4px 0px 4px;
+        box-shadow: inset 1px 1px 5px #333333;
+	border: 2px solid #333;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+        background: -webkit-linear-gradient(left, #B50B3B, #C46B0C);  /* For Safari 5.1 to 6.0 */
+        background: -o-linear-gradient(right, #B50B3B, #C46B0C);      /* For Opera 11.1 to 12.0 */
+        background: -moz-linear-gradient(right, #B50B3B, #C46B0C);    /* For Firefox 3.6 to 15 */
+        background: linear-gradient(to right, #B50B3B , #C46B0C);     /* Standard syntax (must be last) */
+
+        /* background-color: #C46B0C; */
+        //opacity: 0.9;
+        //filter: Alpha(opacity=90);
+        border-radius: 6px;
+}
+
+.banner-buttons {
+        /* top: 40px; */
+        border-radius: 6px;
+        //background: #000000;
+        //opacity: 0.9;
+        float: left;
+        width: 102px;
+        height: 130px;
+        font-size: 14px;
+        padding: 0px;
+        //color: #ffff00;
+}
+
+.config-button {
+        top: 2px;
+        float: left;
+        width: 100px;
+        height: 30px;
+}
+
+.ctrls-button {
+        top: 4px;
+        float: left;
+        width: 100px;
+        height: 30px;
+}
+
+.alarm-button {
+        top: 6px;
+        float: left;
+        width: 100px;
+        height: 30px;
+}
+
+.help-button {
+        top: 8px;
+        float: left;
+        width: 100px;
+        height: 30px;
+}
+
+.banner-title {
+        float: left;
+        /* margin: auto; */
+        padding-top: 20px;
+        padding-left: 140px;
+        color: #ffeeff;
+        font-size: 64px;
+        font-family: Papyrus;
+        text-shadow: 4px 2px #000000;
+}
+
+
+/* LCD display styling */
+@font-face {
+    //font-family: 'Orbitron', sans-serif;
+    
+    /* font-family: 'led_digital_7';
+    src: url('../font/led_digital_7.ttf') format('truetype'); */                      
+    
+    font-family: '5x8LCDHD44780UA02Regular'; 
+    src: url('../font/5x8_lcd_hd44780u_a02-webfont.eot');                                        
+    src: url('../font/5x8_lcd_hd44780u_a02-webfont.eot?#iefix') format('embedded-opentype'),     
+         url('../font/5x8_lcd_hd44780u_a02-webfont.woff') format('woff'),                        
+         url('../font/5x8_lcd_hd44780u_a02-webfont.ttf') format('truetype'),                      
+         url('../font/5x8_lcd_hd44780u_a02-webfont.svg#5x8LCDHD44780UA02Regular') format('svg'); 
+
+    font-weight: normal;
+    font-style: latin;
+}
+
+.lcddisplay {
+        //top: 20px;
+	width: 280px;
+	height: 90px;
+	float: right;
+	margin: 20px;
+	background: #000000;
+        /* 
+	background: -moz-linear-gradient(top, #000000 2%, #2b2b2b 11%, #212121 54%, #212121 92%, #000000 100%); 
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#000000), color-stop(11%,#2b2b2b), color-stop(54%,#212121), color-stop(92%,#212121), color-stop(100%,#000000)); 
+	background: -webkit-linear-gradient(top, #000000 2%,#2b2b2b 11%,#212121 54%,#212121 92%,#000000 100%); 
+	background: -o-linear-gradient(top, #000000 2%,#2b2b2b 11%,#212121 54%,#212121 92%,#000000 100%); 
+	background: -ms-linear-gradient(top, #000000 2%,#2b2b2b 11%,#212121 54%,#212121 92%,#000000 100%); 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000',GradientType=0 ); 
+	background: linear-gradient(top, #000000 2%,#2b2b2b 11%,#212121 54%,#212121 92%,#000000 100%); 
+        */
+        
+	background: -moz-linear-gradient(top, #000000 2%, #17489611%, #0061FC%, #0061FC%, #000000 100%); 
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#000000), color-stop(11%,#174896), color-stop(54%,#0061FC), color-stop(92%,#0061FC), color-stop(100%,#000000)); 
+	background: -webkit-linear-gradient(top, #000000 2%,#17489611%,#0061FC%,#0061FC%,#000000 100%); 
+	background: -o-linear-gradient(top, #000000 2%,#17489611%,#0061FC%,#0061FC%,#000000 100%); 
+	background: -ms-linear-gradient(top, #000000 2%,#17489611%,#0061FC%,#0061FC%,#000000 100%); 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000',GradientType=0 ); 
+	background: linear-gradient(top, #000000 2%,#17489611%,#0061FC%,#0061FC%,#000000 100%); 
+        
+        /*
+        background: -moz-linear-gradient(top, #000000 2%, #81A623 11%, #B4FA02%, #B4FA0292%, #000000 100%); 
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(2%,#000000), color-stop(11%,#81A623), color-stop(54%,#B4FA02), color-stop(92%,#B4FA02), color-stop(100%,#000000)); 
+	background: -webkit-linear-gradient(top, #000000 2%,#81A623 11%,#B4FA0254%,#B4FA0292%,#000000 100%); 
+	background: -o-linear-gradient(top, #000000 2%,#81A623 11%,#B4FA0254%,#B4FA0292%,#000000 100%); 
+	background: -ms-linear-gradient(top, #000000 2%,#81A623 11%,#B4FA0254%,#B4FA0292%,#000000 100%); 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#000000',GradientType=0 ); 
+	background: linear-gradient(top, #000000 2%,#81A623 11%,#B4FA0254%,#B4FA0292%,#000000 100%); 
+        */
+
+        /* background: #3852FC; */
+       	-webkit-box-shadow: inset 1px 1px 5px #333333;
+	-moz-box-shadow: inset 1px 1px 5px #333333;
+	box-shadow: inset 1px 1px 5px #333333;
+	border: 2px solid #333;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+
+.lcddisplay .lcd-text {
+	float:left;
+	margin: 5px 16px;
+}
+
+.lcd-line {
+	float:left;
+	clear:left;
+	font-size: 16px;
+	font-weight: normal;
+	font-style: normal;
+	font-family: '5x8LCDHD44780UA02Regular', monospace;
+        /* color: #F6FF00; */
+        //color: #000000; 
+        color: #ffffff; 
+        white-space: pre;
+}
+
+/* Main Window Tabs styling */
+.tabs-container {
+    float: left;
+    width: 1002px;
+    height: 500px;
+    margin-left: 4px;
+    //padding: 4px 4px 4px 4px;
+}
+
+
+.tabs-container .ui-tabs .ui-tabs-panel {
+    padding: 0px 0px 0px 0px;
+    margin-left: 0px;
+}
+
+
+/* Set tabs at bottom of main window. */
+.tabs-container {
+    position: relative;
+    padding-bottom: 3em;
+}
+
+.tabs-container .ui-tabs-nav {
+    position: absolute;
+    left: 0.25em;
+    right: 0.25em;
+    bottom: 0.25em;
+    padding: 0em 0.2em 0.2em;
+}
+
+.tabs-container .ui-tabs-nav li {
+    top: -1px;
+    border-top: none;
+    border-bottom: 1px solid #ccc !important;
+    -moz-border-radius: 0px 0px 4px 4px;
+    -webkit-border-radius: 0px 0px 4px 4px;
+    border-radius: 0px 0px 4px 4px;
+}
+
+/* Main window styling */
+
+.window-main {
+    width: 1002px;
+    height: 500px;
+    margin-left: 0px;
+    //padding: 0px 0px 0px 0px;
+    background-color: #ffffff; 
+}
+
+#window-mainID.window-main.ui-tabs-panel.ui-widget-content.ui-corner-bottom {
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+}
+
+
+.graph-container {
+        width: 998px;
+	height: 494px;
+	float: left;
+        box-shadow: inset 1px 1px 5px #333333;
+	border: 2px solid #333;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+        background-color: #fff;
+        opacity: 0.9;
+        filter: Alpha(opacity=90);
+}
+
+.graph-box {
+     /* background-color: #000; */
+}
+
+.graph-area {
+    width: 780px;
+    height: 460px;
+    float: left;
+    color: #000;
+}
+
+
+/* Controller window styling */
+.window-ctrl {
+    width: 1000px;
+    height: 500px;
+    margin-left: 0px;
+    padding: 0px 0px 0px 0px;
+    float: left;
+    background-color: #fff;
+}
+
+#window-ctrlID.ui-tabs-panel.ui-widget-content.ui-corner-bottom {
+    padding-left: 0px;
+    padding-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+}
+
+
+.ctrl-container {
+    width: 998px;
+    height: 494px;
+    float: left;
+    box-shadow: inset 1px 1px 5px #333333;
+    border: 2px solid #333;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+    background-color: #fff;
+    opacity: 0.9;
+    filter: Alpha(opacity=90);
+}
+
+.ctrl-container .ui-tabs .ui-tabs-panel {
+    padding: 0px 0px 0px 0px;
+}
+
+.ctrl-banner {
+    width: 980px;
+    margin-top: 4px;
+    margin-left: 4px;
+    float: left;
+    padding-left: 10px;
+    color: #000;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    background-color: #DEDEDE; 
+    box-shadow: inset 1px 1px 5px #777777; 
+    /* border: 2px solid #333;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px; */
+};
+
+.ctrl-graph-container {
+    float: left;
+    width: 980px;
+    height: 460px;
+}    
+
+.ctrl-graph-window {
+    float: right;
+    width: 980px;
+    height: 460px;
+} 
+
+.ctrl-graph-area { 
+    width: 780px;
+    height: 460px;
+    float: left;
+    color: #000;
+}
+
+.ctrl-graph-legend {
+    float: right;
+    width: 150px;
+    height: 150px;
+    color: #000;
+}
+
+.ctrl-profile-btns {
+    float: right;
+    bottom: 20px;
+}
+
+/* Dygraph styles */
+.dygraph-title {
+    color: #555;
+}
+
+.dygraph-label.dygraph-xlabel {
+    color: #555;
+    font-size: 20pt;
+}    
+
+.dygraph-label.dygraph-ylabel {
+    color: #555;
+    font-size: 16pt;
+}
+
+.dygraph-legend {
+    top: 40px;
+    float: right;
+    box-shadow: inset 1px 1px 5px #444444;
+    border: 2px solid #000;
+    border-radius: 2px;
+    /*background-color: #000;*/
+    opacity: 0.7
+    /* filter: Alpha(opacity=70); */
+    font-family: 'CPMono_v07_Plain', monospace;
+    font-style: normal;
+    font-size: 14px;
+    //text-transform: capitalize;
+}
+  
+.legend-container {
+    top: 40px;
+    width: 160px;
+    //height: 210px;
+    float: left;
+    padding: 4px;
+    margin: 4px;
+    box-shadow: inset 1px 1px 5px #333333;
+    border: 2px solid #333;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 4px; 
+    background-color: #fff;
+    opacity: 0.9;
+    filter: Alpha(opacity=90);
+    font-style: normal;
+    font-size: 14px;
+    font-family: 'CPMono_v07_Plain', monospace;
+    color: #000;
+}
+
+.legend-container-title {
+    color: #000;
+    font-size: 18px;
+} 
+
+.display-select {
+    bottom: 40px;
+    width: 160px;
+    height: 200px;
+    float: left;
+    padding: 4px;
+    margin: 4px;
+    box-shadow: inset 1px 1px 5px #333333;
+    border: 2px solid #333;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 4px; 
+    background-color: #fff;
+    opacity: 0.9;
+    filter: Alpha(opacity=90);
+    font-style: normal;
+    font-size: 14px;
+    //font-family: 'CPMono_v07_Plain', monospace;
+    color: #000;
+} 
+
+.display-select-title {
+    color: #000;
+    font-size: 20px;
+}
+
+.dispSel {
+    float:left
+    clear:left;
+    font-size: 16px;
+    font-weight: normal;
+    font-style: normal;
+    //color: #000000;
+    white-space: pre;    
+}
+
+
+/* Progress bar custom styling */
+
+.ui-progressbar {
+    position: relative;
+    color: #00ff00
+}
+
+.compressBar > .ui-progressbar-value {
+    //background: #525252;
+    background: #1e5799; /* Old browsers */
+    background: -moz-linear-gradient(top,  #1e5799 0%, #2989d8 50%, #207cca 51%, #7db9e8 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#1e5799), color-stop(50%,#2989d8), color-stop(51%,#207cca), color-stop(100%,#7db9e8)); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  #1e5799 0%,#2989d8 50%,#207cca 51%,#7db9e8 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#7db9e8',GradientType=0 ); /* IE6-9 */
+
+}
+
+.compressBar-label {
+    color: #ffff00;
+    text-align: center;
+    float: left;
+}
+
+
+.progress-label {
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    color: #ffff00;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+/* DebugDiv styles */
+.debugDiv {
+    float: right;
+    position: fixed;
+    bottom: 30px;
+    width: 100%;
+}
+
+.debugText {
+    color: #000000;
+    background-color: #ffffff;
+}
+

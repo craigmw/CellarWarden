@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./help_styles.css">
+<style>
+</style><title>Profiles</title></head>
+<body>
+
+    <h2>Profiles</h2><p>CellarWarden supports the use of
+controller profiles to control the setpoint of the controller over
+time. These profiles are accessed in the <a style="color: rgb(51, 255, 51);" href="help_controllers.html">Controllers</a> configuration dialog.
+Profiles may be developed "from scratch" using the profile editor or
+templates may be loaded from within the dialog. Note that loaded
+profiles obey the Time Increment setting in the <a style="color: rgb(51, 255, 51);" href="help_controllers.html">Controllers</a> configuration dialog.</p><br><h2>Editing the Profile</h2><p>Open the Profile Dialog from within the Controllers configuration dialog by clicking on the <span style="font-weight: bold;">Edit Profile </span>button...</p><p><img style="width: 630px; height: 919px;" alt="Profile dialog" src="Profiles.JPG" align="middle"></p><span style="font-weight: bold;">The Profile Banner</span><p>The
+top of this dialog presents information about the currently loaded
+profile, including the controller it is associated with (in this case,
+Temperature 1), the profile name (Testing PID functions), the activity
+status (Profile Active: True), the current segment in the profile that
+is active (Current Segment: 0) and the elapsed time in this segment
+(Seg. Elapsed: 0.8 days). Note that clicking on the <span style="font-weight: bold;">Edit Profile </span>button in the Controllers dialog allows for editing or viewing a running profile.</p><p></p><span style="font-weight: bold;">The Profile Graph</span><p>In
+the center of the Profile Dialog, a graph depicting the profile over
+time is presented. The Y-axis represents either the temperature or
+humidity setpoint, depending on the mode selected in the Controller
+Dialog. The X-axis represents time over the course of the profile.
+Again, recall that time depicted here is set by the <span style="font-weight: bold;">Time Increment</span> control in the Controllers Dialog.If
+a profile is currently running/active, an orange marker will be
+displayed that indicates the current segment and approximate duration
+within that segment. This provides a quick method for checking the
+status of an active profile.  </p><p></p><span style="font-weight: bold;">The Profile Editor</span><p>Below
+the graph, the Profile Editor is provided. The profile is split up into
+different segments, starting from segment 0 to as many segments as are
+needed. If a profile is running, the currently active segment will be
+highlighted. To add a new segment to the end of the current profile,
+click
+the <span style="font-weight: bold;">Add Segment</span> button. To
+edit a segment, click on the edit control (this looks like a pencil at
+the right of each segment row). This will open an <span style="font-weight: bold;">Edit Segment</span>
+dialog
+in which the Duration, Start Setpoint, End Setpoint and Hold parameters
+may be edited. For ramping, the start and end setpoints can be
+different and CellarWarden will automatically ramp between these
+temperatures over the duration of the segment. For a stepped segment,
+set the Start and End setpoints to the same value. To delete a segment,
+click on the delete button (this is an X at the right of each segment
+row). Note that it is not possible to delete segments if the profile is
+currently running.&nbsp;</p><p> </p><h2>Profile Templates</h2><span style="font-weight: bold;">Load Templates</span><p>To load a pre-existing template, click on the <span style="font-weight: bold;">Load Template</span> button...</p><br><img style="width: 506px; height: 248px;" alt="Load Template" src="LoadTemplate.JPG"><p>Use
+the pulldown menu to select a template to load. After selecting a
+template, the Profile Name and number of segments will be shown. Click
+on the <span style="font-weight: bold;">Load</span> button to load this into the Profile Editor. Click on the <span style="font-weight: bold;">Delete</span> button to delete this template from the server. Press <span style="font-weight: bold;">Cancel</span> to return to the Profile Editor dialog. Note that it is not possible to load a template if the profile is active.</p><p><span style="font-weight: bold;"></span></p><span style="font-weight: bold;">Saving Templates</span><p>After editing a profile, this may be saved as a template on the server. To do so, click the <span style="font-weight: bold;">Save Template</span> button, which will bring up the following dialog:</p><img style="width: 381px; height: 206px;" alt="Save Template" src="SaveTemplate.JPG"><br><br><p>Provide a Filename with the extension .pro, e.g. Hellesbock.pro. This filename must correspond to Linux <a style="color: rgb(51, 255, 51);" href="http://linuxg.net/the-7-main-rules-for-naming-files-and-folders-in-linux-and-unix/">filename convensions</a>.
+Enter a descriptive Profile Name of less than about 20 characters. Note
+that profile templates are stored in the directory
+../CellarW/public/profiles.</p><br></body></html>

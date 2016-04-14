@@ -1,0 +1,44 @@
+{
+  "name": "CellarWarden",
+  "version": "1.0.1",
+  "description": "Monitors/controls wine cabinet or cellar temperatures and humidity. Now adds temp/humidity control.",
+  "main": "CellarW.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/craigmw/CellarWarden.git"
+  },
+  "keywords": [
+    "wine",
+    "monitor",
+    "dht22",
+    "am2302",
+    "dht11",
+    "ds18b20"
+  ],
+  "author": "Craig M. Walsh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/craigmw/CellarWarden/issues"
+  },
+  "homepage": "https://github.com/craigmw/CellarWarden",
+  "dependencies": {
+    "cron-job": "^1.0.2",
+    "ds18x20": "^0.2.0",
+    "express": "^4.10.6",
+    "fast-csv": "^1.1.0",
+    "forever-monitor": "^1.7.0",
+    "fs.extra": "^1.3.2",
+    "ip": "^1.1.0",
+    "justify": "^1.0.0",
+    "lcd": "^1.1.1",
+    "lcdi2c": "^1.0.4",
+    "node-dht-sensor": "0.0.11",
+    "nodemailer": "^2.3.1",
+    "pid-controller": "^1.0.3",
+    "rpi-gpio": "^0.7.0",
+    "socket.io": "^1.2.1"
+  }
+}

@@ -1,0 +1,12 @@
+GPIOpins.txt
+Description of GPIO pins to use for CellarWarden.
+
+GPIO pin 	Level Shifter?	Function
+SDA			Yes				I2C (Direct (w/o level shifter for RTC))
+SLC			Yes				I2C	(Direct (w/o level shifter for RTC))
+4			Yes				1-wire bus
+17			Yes				DHT#1
+27			Yes				DHT#2
+23			Yes				Actuator 1
+24			Yes				Actuator 2
+27			Yes				Actuator 3		

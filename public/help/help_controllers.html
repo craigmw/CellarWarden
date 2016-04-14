@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="./help_styles.css">
+<style>
+</style>
+<title>Controllers</title></head>
+<body>
+<h2><a id="user-content-controllers" class="anchor" href="#controllers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Controllers</h2>
+<p>CellarWarden supports control of wine cellars, fermentors and other
+appliances through the provision of an unlimited number of controllers.
+Each controller takes input from one or two thermal (e.g. DS18B20) or
+humidity (e.g. DHT22) sensors and controls actuators connected via GPIO
+outputs. Controller output may be one- or two-sided (e.g. heat only, or
+heating and cooling with automatic switchover), and will attempt to
+maintain a stable output to control temperature or humidity to a
+defined setpoint. Controllers can also employ a setpoint profile in
+which the setpoint varies over time, and these profiles can be created
+on the fly or loaded from template files stored on the server.&nbsp;</p><p></p><h2>Input(s)</h2><p>Controllers
+may be configured to use one primary sensor, and an optional secondary
+sensor, to monitor the output of an actuator/appliance (e.g.
+refrigerator, heater, humidifier, etc). Sensors currently supported are
+DS18B20 1-Wire temperature sensors and DHT11/DHT22-type
+temperature/humidity sensors. CellarWarden provides upto 2 DHT-type and
+8 DS18B20 sensors. If two sensors are used, the relative impact of the
+secondary sensor on the input value will be factored using a percentage applied to the secondary value. For example, if sensor 1
+reads 100F and sensor 2 reads 80F, a 50% "Sensor 2 priority" value will
+give an input of 90F; this is a simple example of averaging between the two sensors. However,
+it may be desirable to lower or increase the priority of sensor 2
+accordingly.&nbsp;</p><br><h2>Output(s)</h2><p>Each controller supports
+upto two actuators/appliances. These actuators are connected via GPIO
+pins, and the controller will vary the output of these actuators based
+on comparing the current input(s) to the desired setpoint in Automatic
+mode. There are two options for Automatic output mode: Hysteresis and
+PID. A third output mode is Manual mode, in which the setpoint is set
+from 0 to 100% to manually control the output irrespective of the input
+value.</p><br><p><a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Hysteresis#Control_systems"><span style="font-weight: bold;">Hysteresis mode</span></a>
+attempts to maintain the current input value close to the setpoint and
+will activate the actuator if it is above (or below) the setpoint. For
+example, if the setpoint is 65F and the input value is 63F, the heating
+actuator (if configured) will be activated until the input nears the
+setpoint. Note that in Hysteresis mode, cooling/dehumidifying and
+heating/humidifying Hysteresis values may be set to turn off actuator
+output as it nears the setpoint. This will help to minimize over- or
+under-shooting the setpoint, and will also limit rapid cycling of the
+actuator(s).</p><img style="width: 800px; height: 412px;" alt="Hysteresis" src="Hysteresis.jpg"><p>Above,
+we can see the output from a controller set to maintain temperature at
+105F using Hysteresis mode, with hysteresis values of one degree F on
+either side of the setpoint.&nbsp; </p><p><br><a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/PID_controller"><span style="font-weight: bold;">PID mode</span></a> attempts to maintain the current input value near the setpoint by using <span style="color: white;">PID control</span>.
+It calculates the error between the input (process variable) and the
+setpoint and automatically varies the output proportionally to maintain
+the input near the setpoint. PID control is preferred when the actuator
+will support this form of output. Currently, CellarWarden supports
+software <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Pulse-width_modulation#Time_proportioning">time-proportioning</a> output for PID control, but future versions will also support hardware <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Pulse-width_modulation">pulse-width-modulation (PWM)</a>
+for compatible actuators (e.g. DC fans, valves, etc). For
+time-proportioning, the output value is converted to a proportional
+amount of time the actuator is on for a set period of time called the
+"window." The amount of time for this window is set using the parameter
+"PID Window Size." For example, for a window of 60 seconds, a 10%
+output would cause the actuator to be on for 6 seconds and then off for
+the remaining 54 seconds, and then the process would be repeated. Short
+window sizes (&gt;= 2 seconds) are preferred for fast acting actuators
+(e.g. heaters), whereas long window sizes (e.g. 300 seconds) are to be
+used for slow acting actuators that might be damaged by rapid on/off
+cycling (e.g. refrigerators).</p><img style="width: 800px; height: 392px;" alt="PID output" src="PID_Output.jpg"><p>Above
+is an example of a controller using PID output mode. Here, the
+temperature remains fairly stable, with the exception of some
+disturbances toward the end of this sequence (cold water added at
+around 18:05). The red line shows that the heating actuator was active
+at 100% initially after the setpoint (green line) was shifted. After
+reaching the setpoint, the heating actuator output stabilized at
+roughly 80% to maintain the temperature. </p><p><a style="color: rgb(51, 255, 51);" href="help_profile.html">Profile Mode</a>:
+The setpoint for a controller can follow a time vs. setpoint profile in
+either PID or Hysteresis output mode. This can be useful for control of
+beer or wine fermentation, or to slowly ramp between different
+temperature or humidity levels.</p><p><img style="width: 1007px; height: 519px;" alt="Profile Output" src="ProfileOutput.jpg"> </p><p>In&nbsp;the
+example above, the controller is using PID output mode, with the
+setpoint (green line) following a temperature profile. After ramping up
+to the setpoint, the heating actuator stabilized at roughly 40% output,
+and ramped up again before the profile called for cooling. Very complex
+temperature or humidity profiles can be achieved through the use of
+this function.&nbsp;</p><p> </p><h2>Controller configuration</h2><p>To
+configure controllers, click on the Controllers button on the
+&nbsp;CellarWarden banner. This will bring up the Controllers dialog:</p><img style="width: 904px; height: 840px;" alt="Controller dialog, part 1." src="ctrlDialog1.JPG"><br><br><p><span style="font-weight: bold;">Controller dialog Banner</span></p><p>On the banner, there are three controls, a pulldown menu to select a controller to edit, an <span style="font-weight: bold;">Add</span> button to add new controllers and a <span style="font-weight: bold;">Delete</span> button to delete the currently selected controller. Additions and deletions will not be made until the <span style="font-weight: bold;">Save</span> button is pressed.</p><br><p><span style="font-weight: bold;">General</span></p><p>Here, general features of the selected controller may be edited.&nbsp;<span style="font-weight: bold;">Name&nbsp;</span>is used to provide a descriptive name for the controller. The&nbsp;<span style="font-weight: bold;">Active</span>
+checkbox is used to control the processing status of the controller.
+Use this checkbox to turn the controller on and off. The&nbsp;<span style="font-weight: bold;">Setpoint</span>
+box is used to set the desired temperature or humidity for this
+controller (when a profile is not running on this controller). In
+Manual output mode, this input is used to set the ouput (0-100%).&nbsp;<span style="font-weight: bold;">Output Mode</span>
+is used to select between automatic and manual output modes. Use Auto
+for Hysteresis or PID controlled output. Use Manual Cool or Manual Heat
+to apply a percent output (0-100%) to either actuator. Note that the
+selected actuator must be in PID mode for manual output to function. In
+Hysteresis mode, Manual output does not function.</p><p></p><p><span style="font-weight: bold;">Logging</span></p><p>A
+controller's input and output values may be optionally saved to a log
+file for viewing on the Main page under the "Controller" tab. For this,
+the <span style="font-weight: bold;">Log Data</span> checkbox must be checked, and a unique <span style="font-weight: bold;">Logfile</span> name provided.
+The logfile should be named with the extension .csv, e.g. temp1.csv.
+These logfiles are comma delimited text files and may be downloaded
+from the server in the ../CellarW/public/controllers directory and
+viewed using Excel or other spreadsheet software. Click the <span style="font-weight: bold;">Reset Logfile</span> button to delete all data in the logfile if you wish to start logging over.</p><br><p><span style="font-weight: bold;">Sensors</span></p><p>Here, the sensor(s) used by the controller are set up. Select the type of sensor, humidity or temperature, using the <span style="font-weight: bold;">Sensor Type</span> control. Use the <span style="font-weight: bold;">Sensor1 Name</span> pulldown menu to select the primary sensor. If a secondary sensor is desired, enter the <span style="font-weight: bold;">Sensor 2 Priority</span> (from 0 to 100%) and select the <span style="font-weight: bold;">Sensor2 Name</span> from the pulldown list.&nbsp;</p><p>Use the scroll bar on the right to see the rest of the Controllers configuration dialog...</p><p><img style="width: 903px; height: 843px;" alt="Controller Dialog part 2" src="ctrlDialog2.JPG"><span style="font-weight: bold;"><span style="font-weight: bold;"><span style="font-weight: bold;"></span></span></span></p><p><span style="font-weight: bold;">Cooling/Dehumidifying</span></p><p>This
+fieldset describes the cooling or dehumidifying actuator that will be
+controlled. Enter the GPIO number that connects to the actuator. Note
+that the Broadcom (BCM) GPIO number is used, not the actual pin on the
+GPIO header of the Raspberry Pi. More information about GPIO pin
+numbering can be found by clicking on <a style="color: rgb(51, 255, 51);" href="http://pinout.xyz/">this link</a>.<span style="font-weight: bold;"> </span>Click on the <span style="font-weight: bold;">Test GPIO Pin</span> button to test the functionality of this GPIO pin; a two second pulse will be sent to activate this pin. The <span style="font-weight: bold;">Invert Output</span>
+checkbox may be selected to invert the output of this GPIO, a feature
+useful for connecting to relay boards that require the GPIO to be
+pulled low to be turned on. The <span style="font-weight: bold;">Use PWM</span> checkbox is currently inactive, but will provide hardware PWM output in a future update of CellarWarden.</p><p>The <span style="font-weight: bold;">Delay</span> parameter can be set to a non-zero value (in minutes) to cause a delay in switching on the actuator after it has turned off.
+For example, if the delay is set to 5, after switching off, the cooling
+actuator will be delayed for 5 minutes before it can switch on again.
+The purpose of this delay is to prevent rapid cycling of the actuator
+which could damage certain appliances, e.g. those with compressors like
+refrigerators, wine cellar cooling units, etc. This delay is
+implemented in both Hysteresis and PID output modes. Use a long delay
+time (e.g. 5 minutes) for compressor-based appliances, and a short or
+no delay for fast-acting appliances (e.g. heaters, ultrasonic misters).
+When the actuator has a delay, the output on the Controller tab graph
+will be discontinuous, reflecting times when the actuator is on vs.
+when it is in a delay. An example of this is shown for a heating
+actuator in PID mode with a set delay of 2 minutes...</p><p><img style="width: 687px; height: 398px;" alt="Controller delay" src="ControllerDelay.JPG"></p><p>Note the broken red lines shortly after the input (black line) surpasses the setpoint (green line). Since
+PID mode uses <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Pulse-width_modulation#Time_proportioning">time-proportioning</a> (e.g. the actuator turns on for a
+percentage of the time window and then turns off), each time it turns
+off, the actuator will enter the delay mode and the LCD display will
+indicate "Waiting for Heat," etc. Since the actuator is off during these
+delay periods, the red line showing heating output is broken. Note that
+the roll window is set to 1. If the roll window is higher than one,
+averaging may connect the segments in which the heating actuator was
+on, again an artifact of applying a rolling average to such data.</p><p>The <span style="font-weight: bold;">Control Mode</span> may be set for Hysteresis or PID mode by clicking on the correct radio button. <span style="font-weight: bold;">Hysteresis </span>sets
+a value for cooling/dehumidifying in which the actuator will turn off
+before the input hits the setpoint. For cooling, the Hysteresis value
+will be added to the setpoint. For example, with Hysteresis set to 2,
+if the setpoint is 65F, the actuator will turn off when the input
+reaches 67F. The&nbsp;Hysteresis value does not currently impact PID control and only affects Hysteresis mode.</p><p>Use the <span style="font-weight: bold;">PID Autotune</span>
+button to activate autotuning on this actuator.&nbsp;Note that autotuning is
+supported for both the Cooling/Dehumidifying and Heating/Humidifying
+actuators independently. Only one actuator may be autotuned at a time.
+To independently autotune the cooling/dehumidifying actuator, turn off
+the heating/humidifying actuator
+by unplugging it or by entering a blank value in the heating actuator's
+GPIO Pin field. It is suggested that you autotune your system at a
+stable temperature where the output is greater than 20% and less than
+80% to obtain the most reliable tuning parameters. You may also
+manually set the <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/PID_controller">PID values</a> for <span style="font-weight: bold;">Kp</span>, <span style="font-weight: bold;">Ki</span>, and <span style="font-weight: bold;">Kd</span> by entering these values in each field. Note that autotuning may yield very large values for the <span style="font-weight: bold;">Kd</span>
+parameter, reflecting the relatively slow processes controlled by this
+actuator. More reasonable values less than 20 give more stable outputs.
+Autotuning may take some time (an hour or more) for slow processes, and
+the autotune mode will be indicated by an "AC" or "AH" prefix on the
+status line of the LCD panel. Autotuning will also be apparent on this
+actuator as the <span style="font-weight: bold;">PID Autotune</span> button will toggle to <span style="font-weight: bold;">Cancel Autotuning</span>.
+Click this button to cancel autotuning. If the autotune routine has
+been long enough (at least one cycle), preliminary tuning parameters
+will be reported in the server log. If the autotune routine is allowed
+to complete, the <span style="font-weight: bold;">Kp</span>, <span style="font-weight: bold;">Ki</span> and <span style="font-weight: bold;">Kd</span> fields will be filled with the calculated values.&nbsp;&nbsp;</p><p><img style="width: 800px; height: 548px;" alt="Autotuning" src="AutotuneDelay.JPG"></p><p>Autotuning
+is engaged on the heating actuator above. Note the discontinuous lines
+(red dots), indicating that the heating actuator has a delay set to
+minimize rapid cycling on this actuator. For this example, the
+temperature (input) was allowed to rise and settle near the setpoint
+and then the autotune routine was started. This results in a shift in
+the actuator output roughly 20% higher than when started, resulting in
+a peak in the temperature. Then the output shifts to 20% below the
+starting output level, resulting in a lower peak. This process is
+repeated until the autotune routine has determined the average cycle
+time, allowing for calculation of the PID tuning parameters. CellarWarden employs the <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method">Ziegler-Nichols PID autotuning algorithm</a>,
+which yields fairly aggressive tuning parameters. It is useful for
+reaching the setpoint quickly and for minimizing cycling, but it tends to
+result in an overshoot on the first cycle. To minimize this overshoot,
+you may wish to reduce the Kp value somewhat. More information about
+PID autotuning is available <a style="color: rgb(51, 255, 51);" href="http://brettbeauregard.com/blog/2012/01/arduino-pid-autotune-library/">here</a>.</p><p><br></p><p>The <span style="font-weight: bold;">PID Window Size</span> field is used to set the window length in seconds for time-proportioning control as explained above.&nbsp;</p><p></p><p><span style="font-weight: bold;">Heating/Humidifying</span></p><p>The
+parameters in this fieldset are similar to those in the
+Cooling/Dehumidifying fieldset, but control the heating or humidifying
+actuator. Note that if the controller requires only a single actuator
+(either Cooling/Dehumidifying or Heating/Humidifying), leave the GPIO
+pin blank for the actuator that will not be connected to an appliance.
+Even if an actuator is not connected, it is important that PID Kp, Ki
+and Kd values are set for this actuator when in PID mode; just copy
+these values from the active actuator's fieldset. For
+heating/humidifying, the Hysteresis value will be subtracted from the
+setpoint so that the actuator turns off before hitting the setpoint.
+For example, if the setpoint is 65F and the Hysteresis value is 1, the
+actuator will turn off when the input hits 64F.</p><p></p><p><span style="font-weight: bold;">Profile</span></p><p><span style="font-weight: bold;"></span>Each controller may use a single profile that will vary the setpoint over time. Click on the <span style="font-weight: bold;">Use Profile</span> checkbox to enable profile processing on this controller. C<span style="font-weight: bold;"></span><span style="font-weight: bold;"></span>lick on the <span style="font-weight: bold;">Edit Profile</span> button to open up the <a style="color: rgb(51, 255, 51);" href="help_profile.html">Profile Dialog</a> to edit the profile parameters. Click the <span style="font-weight: bold;">Start Profile</span> button to start processing on the selected profile. Note that this will toggle to <span style="font-weight: bold;">Stop Profile</span> when a profile is currently active. <span style="font-weight: bold;">Time Increment</span>
+controls the timebase in which the selected profile is handled. Select
+on Minutes, Hours or Days to indicate the appropriate timebase for this
+profile. Supply an appropriately descriptive name for this profile in
+the <span style="font-weight: bold;">Name</span> field. Note that when controllers are edited in the <a style="color: rgb(51, 255, 51);" href="help_profile.html">Profile Dialog</a>, the name associated with the profile edited or loaded in that dialog will be copied here.</p><br><p style="font-weight: bold;">Save/Cancel</p><p>Click on the <span style="font-weight: bold;">Save</span>
+button to save all changes edited on any selected controller and send
+these to the server. This button must be clicked to save any changes,
+even to those made in the Profile Dialog. Click on <span style="font-weight: bold;">Cancel</span> to close the Controllers Dialog without saving these changes.</p></body></html>

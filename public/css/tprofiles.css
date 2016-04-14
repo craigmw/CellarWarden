@@ -1,0 +1,82 @@
+.tProfCtrlName {
+    float: left;
+    font-size: 16px;
+}
+
+.tProfCtrlProf {
+    float: right;
+    font-size: 16px;
+}
+
+.tProfStatusBar {
+    width: 480px;
+    float: left;
+    font-size: 16px;
+    color: #ffff00;
+}
+
+.tProfActive {
+    float: left;
+}
+
+.tProfCurrSegm {
+    float: left;
+}
+
+.tProfCurrSegmElapsed {
+    float: right;
+}
+
+.btnAdd {
+    float: left;
+}
+
+.tProfGrid {
+    float: left;
+}
+
+.tProfGraphContainer{
+    float: left;
+    width: 480px;
+    height: 340px;
+    background-color: #ffffff;
+}
+
+.tProfDygraph {
+    float: left;
+    /*width: 280px;
+    height: 200px;*/ 
+}
+
+.tProfGraphLegend {
+    float: right;
+    background-color: #ffffff;
+}
+
+.tProfGraphLegend .dygraph-legend {
+    float: right;
+    background-color: #ffffff;
+}
+
+.tProfBtnBar {
+    padding-left: 50px;
+}
+
+.gridContainer {
+    padding-left: 30px;
+}
+
+.loadFileList {
+    float: left;
+}
+
+.tmpInfo {
+   float: right;
+   font-size: 16px;
+}
+
+
+#loadFileListID-menu {
+    height: 100px;
+    overflow-y: scroll;
+}

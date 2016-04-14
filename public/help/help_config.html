@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./help_styles.css">
+<style>
+</style><title>Configuration</title></head>
+<body><h2>Configuration</h2><p>In order to function properly,
+CellarWarden must be configured to interact with&nbsp;hardware attached
+to the Raspberry pi. This can be configured by clicking on the
+Configure button of CellarWarden's <a style="color: rgb(51, 255, 51);" href="help_main.html">home screen</a>.</p><br><h2>General tab</h2><span style="font-weight: bold;"><img style="width: 905px; height: 651px;" alt="Configure General" src="ConfigureGeneral.JPG"></span><p><span style="font-weight: bold;">Server</span> </p><p style="font-weight: bold;">Password Protect:&nbsp;<span style="font-weight: normal;">Click
+True to require a password to operate CellarWarden. On page loads, a
+password dialog will open and request a password. Incorrect passwords
+will prevent access to CellarWarden's functions.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Password:</span> Supply a password for CellarWarden.<span style="font-weight: bold;"></span></span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Title:</span>
+Title for this CellarWarden server, displayed on the Main Sensor graph.
+Allows for easy determination of which CellarWarden instance is being
+viewed. This can help if there are multiple CellarWarden instances.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Password:</span> Supply a password for CellarWarden.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Server Address:</span> The local server IP address on the LAN.&nbsp;</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Server Port:</span> The port for the server on the Raspberry Pi. Defaults to 8888.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Show Server Log:</span>
+During operation, CellarWarden stores output to a file called
+server.log. Click this button to show the contents of this server log.
+This log can be useful for checking on connections from different
+users, and also for debugging purposes.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Clear Server Log:</span>
+Click this button to clear out the server log. This is important
+because the server log can quickly become quite long. It is suggested
+that this log be cleared frequently, particularly after significant
+configuration changes have been made.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Miscellaneous</span></span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Temp Scale:</span>
+Choose between Fahrenheit and Celsius. Note that while CellarWarden
+converts from Celsius to Fahrenheit when obtaining sensor values, it
+does not interconvert log files. Thus, it is important to set this
+correctly before commencing logging operations.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Reject Extremes: </span>Set
+this control to True to prevent logging of errant temperature and
+humidity data that occurs occasionally due to errors in sensor polling
+(particularly for DHT sensors).&nbsp;</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Reject Threshold:</span>
+When Reject Extremes is true, this sets a threshold in which exceeding
+this value by less than or greater than&nbsp;e.g. 50 from the last time
+the sensor was polled will result in rejection of the data. This
+prevents invalid data from causing spikes in the logfiles.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Reboot RPi:</span>
+Click this button to immediately reboot the Raspberry Pi. This will
+suspend all action on the client side until the server has rebooted.
+After rebooting, the CellarWarden server should restart and resume
+communication with the client app. This will be evident when the LCD
+display is updated. This feature is useful for testing the server to
+ensure that CellarWarden will restart on server reboots.</span></p><br><h2>Sensors tab</h2><img style="width: 905px; height: 649px;" alt="Configure Sensors" src="ConfigureSensors.JPG"><p style="font-weight: bold;">DHT Sensors</p><p style="font-weight: bold;">DHT#1/DHT#2 Type: <span style="font-weight: normal;">Select
+between DHT11 or DHT22 humidity/temperature sensors for DHT1. If using
+an AM2302, select DHT22. If not using a sensor for DHT1 or DHT2, select
+None.</span></p><p style="font-weight: bold;">DHT#1/DHT#2 GPIO: <span style="font-weight: normal;">The GPIO number that this sensor is connected to. Use the Broadcom/BCM number for this, as specified <a style="color: rgb(51, 255, 51);" href="http://pinout.xyz/">here</a>.</span></p><p style="font-weight: bold;">DHT#1/DHT#2 Label: <span style="font-weight: normal;">A descriptive label that will be displayed on the LCD display for this sensor.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">One Wire Sensors</span></span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Load OneWire Devices:</span>
+Loads an updated list of 1-wire devices connected to the 1-wire bus.
+While CellarWarden loads the list of 1-wire devices on bootup, adding
+or removing 1-wire devices from the bus will require that this button
+be clicked for proper display of the current list of devices.</span></p><p style="font-weight: bold;">oneW GPIO:&nbsp;<span style="font-weight: normal;">Select
+the GPIO number that the 1-wire bus is connected to. This defaults to
+4, although it is possible to specify a different GPIO number in
+Raspbian. This field does not automatically reconfigure the 1-wire bus,
+but serves as a reminder that this GPIO number is in use for 1-wire
+access.</span></p><p style="font-weight: bold;">onew1 ID: <span style="font-weight: normal;">Click
+on this pulldown menu to select the 1-wire device ID for this sensor.
+Leave the device set to None if no device is connected. onew1-onew8
+sensors will be set up in this manner.<span style="font-weight: bold;"> </span></span><span style="font-weight: normal;"></span></p><p style="font-weight: bold;">onew1 Label: <span style="font-weight: normal;">Provide a short but descriptive title for this sensor. Used for display on the LCD.</span><span style="font-weight: normal;"> </span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span>Note: <span style="font-weight: normal;">Use the scrollbar on the right to scroll through all of the 1-wire devices.</span></p><br><h2>Power tab</h2><p style="font-weight: bold;"><span style="font-weight: normal;">This does not currently function, but will be provided in a future update of CellarWarden.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><h2>Calibration tab</h2><img style="width: 904px; height: 652px;" alt="Configure Calibration" src="ConfigureCalibration.JPG"><p style="font-weight: bold;"><span style="font-weight: normal;">This tab provides a means to calibrate the temperature and humidity sensors. On
+the left, individual calibration values are provided for the DHT
+sensors. These include both temperature and humidity calibration. On
+the right, the 1-wire temperature sensors may be calibrated. In each
+case, you may either enter a positive or negative number, or use the up
+and down arrows to increment or decrement the offset. These offsets are
+added to (positive offset)/subtracted from (negative offset) the
+sensor's raw value before plotting and controller processing. To set
+calibration for a particular probe, it is suggested that an accurate</span> <span style="font-weight: normal;">measurement
+be made with a precision instrument (e.g. high resolution thermometer)
+in a range in which the sensor will operate, and compare that
+measurement with the value from this sensor. Enter an offset to bring
+this sensor in line with the precision sensor.&nbsp;</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><h2>Logging tab</h2><img style="width: 900px; height: 644px;" alt="Configure Logging" src="ConfigureLogging.JPG"><p style="font-weight: bold;"><span style="font-weight: normal;">This tab provides options primarily for the main sensor and alarm logging function (for controller logging, see the <a style="color: rgb(51, 255, 51);" href="help_controllers.html">Controller help screen</a>).</span></p><p style="font-weight: bold;">Logging Options</p><p style="font-weight: bold;">Log File: <span style="font-weight: normal;">Enter
+the name of the file to log sensor data and alarm annotations. The file
+is a comma delimited file, and the suggested suffix is .csv. This file
+is stored in ../CellarW/public. The file may also be opened by popular
+spreadsheet software such as Microsoft Excel.</span>&nbsp;<span style="font-weight: normal;"></span></p><p style="font-weight: bold;">Reset Logfile: <span style="font-weight: normal;">Click
+this button to clear out all data from the logfile. Note that while
+this removes all data and alarm annotations from the logfile, it does
+not clear the list of triggered alarms.</span></p><p style="font-weight: bold;">Averaging: <span style="font-weight: normal;">Set this to True to average the data from each sensor before writing to the log file.</span></p><p style="font-weight: bold;">Logging Increment:&nbsp;<span style="font-weight: normal;">This
+sets the system-wide sampling rate for sensor logging both for the main
+logfile and for the controller log files. CellarWarden polls sensors
+roughly every three seconds, and logs data every nth time with n equal
+to the value of this parameter. Thus, if Logging Increment is set to
+10, each sample in the log file will be taken at roughly 30 second
+intervals. As such log files can accumulate data rather quickly, it is
+suggested that a minimum of 10 be used to prevent slow client-side
+operations.</span></p><br><p style="font-weight: bold;">Logfile Compression</p><p style="font-weight: bold;"><span style="font-weight: normal;">Because
+the main logfile can become very large over time, CellarWarden provides
+a method to compress or truncate the main log file. The truncate
+algorithm simply removes data older than a specified number of days.
+The compression algorithm deletes most data older than a specified
+number of days, but preserves a single record for a configurable number
+of minutes.&nbsp;</span></p><p style="font-weight: bold;">Compress Logfile:&nbsp;<span style="font-weight: normal;">Set this to true to activate logfile compression.</span></p><p style="font-weight: bold;">Preserve detail until:&nbsp;<span style="font-weight: normal;">All data older than this number of days will be compressed or truncated.</span></p><p style="font-weight: bold;">Keep old record each: <span style="font-weight: normal;">Preserves a single record for each period (in minutes) set by this value on records older than the number of days specified.
+For example, if set to 60 minutes, only a single record for each 60
+minutes will be kept for data older than the number of days specified
+by the Preserve detail until field. Set this to greater than zero for
+compression. Set this to zero for truncation (all records deleted older
+than the specified number of days).</span></p><p style="font-weight: bold;">Automatic Compression: <span style="font-weight: normal;">Automatically compresses or truncates the logfile at the specified time each day.</span></p><p style="font-weight: bold;">Autocompress at:&nbsp;<span style="font-weight: normal;">Enter the time (in military format) in which to run the compression/truncation routine each day.</span></p><p style="font-weight: bold;">Compress Now: <span style="font-weight: normal;">Click this button to manually run the compression/truncation algorithm using the specified parameters.</span></p><h2>Display tab</h2><img style="width: 908px; height: 650px;" alt="Configure Display" src="ConfigureDisplay.JPG"><p style="font-weight: bold;"><span style="font-weight: normal;">This
+tab is used to configure the hardware LCD panel. This panel may be
+connected via a parallel connection requiring 6 GPIO pins, or via the
+I2C bus. CellarWarden supports I2C communications via an 8-port I2C
+port expander such as the PCF8574.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span><span style="font-weight: bold;">Use LCD Panel:</span> <span style="font-weight: normal;">Click
+this checkbox to activate the hardware LCD panel. This only affects the
+hardware LCD panel and does not impact display of the virtual LCD panel
+on CellarWarden's home page.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span><span style="font-weight: bold;">Type:</span> <span style="font-weight: normal;">Select
+Standard to use an LCD panel that communicates in parallel (e.g. via 6
+GPIO pins). Select I2C to select serial communication over I2C via an
+8-bit port expander such as the PCF8574. Note that if CellarWarden is
+unable to connect to the I2C-based LCD panel when in I2C mode (either
+on startup or during processing), the server will turn off the Use LCD
+Panel checkbox and report an error in the server logfile.&nbsp;</span></p><p style="font-weight: bold;"><span style="font-weight: bold;">LCD Columns:</span> <span style="font-weight: normal;">Number of columns of the hardware and virtual LCD panels. For example, for a 20 x 4 LCD panel</span>, <span style="font-weight: normal;">this should be set to 20.</span></p><p style="font-weight: bold;"><span style="font-weight: bold;">LCD Rows:</span>&nbsp;<span style="font-weight: normal;">Number of rows for the hardware and virtual LCD panels. Use 4 for a 20 x 4 LCD panel.</span> <span style="font-weight: normal;">While
+smaller panels such as 16 x 2 panels may be used, such panels will fail
+to provide sufficient detail. Thus, it is strongly recommended that
+only 20 x 4 (or larger) panels be used for CellarWarden.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><p style="font-weight: bold;"><span style="font-weight: normal;">The following fields are used only for I2C connected LCD displays...</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span>I2C Bus: <span style="font-weight: normal;">If
+using an LCD panel connected via I2C, indicate the I2C bus used. On a
+Raspberry Pi version 1 board, this parameter should be set to zero. On
+a revision 2+ board, this should be set to 1. More information about
+setting up the Raspberry Pi I2C bus can be found <a style="color: rgb(51, 255, 51);" href="https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c">here</a>.</span> <span style="font-weight: normal;"></span></p><p><span style="font-weight: bold;">Address:</span> <span style="font-weight: normal;">If
+using an LCD panel connected via I2C, indicate the device address for
+the LCD panel. This can be found using typing i2cdetect -y bus#, with
+bus# replaced with 0 or 1, depending on the I2C bus number.</span></p><p><span style="font-weight: normal;"></span></p><p><span style="font-weight: normal;">The following fields are only applicable to "standard" parallel connected LCD displays...</span></p><p><span style="font-weight: bold;">Backlt GPIO#:</span> <span style="font-weight: normal;">Number
+of the GPIO pin connected to a backlight on a parallel-connected LCD.
+This is not required for the backlight on an I2C connected LCD. This is
+currently not used but will be revised in an updated version of
+CellarWarden.</span></p><p><span style="font-weight: bold;">Reset GPIO#:</span> <span style="font-weight: normal;">Use this field to set the GPIO pin connected to the reset pin on the parallel LCD.</span></p><p style="font-weight: bold;">Enable GPIO#: <span style="font-weight: normal;">Use this field to set the GPIO pin connected to the enable pin on the parallel LCD.</span></p><p style="font-weight: bold;">Data_0-4 GPIO#: <span style="font-weight: normal;">Use
+these fields to set the GPIO pins connected to the upper 4 bit data
+pins on the parallel LCD. Note that the order of these pins is
+important, so make sure to carefully note which GPIO pins are connected
+to each data pin. An example of connecting a parallel LCD panel is
+shown in the <a style="color: rgb(51, 255, 51);" href="help_hardware.html">Hardware Examples</a> help page.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><h2>Actuators tab</h2><p style="font-weight: bold;"><img style="width: 903px; height: 648px;" alt="Configure Actuators" src="ConfigureActuators.JPG"></p><p style="font-weight: bold;"><span style="font-weight: normal;">Use this tab to configure Door Switch actuators.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Door1/2 switch:</span> Set to True to configure a door switch.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Door1/2 GPIO#:</span>
+Set the GPIO number on which this switch is connected. Note that the
+door is considered closed when this GPIO pin is pulled high (e.g. to
+3.3V) by the switch.&nbsp;</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Door Closed value:</span> This value is used to set the minimal value when plotting door open events on the Sensor graph.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Door Open value:</span> This value is used to set the maximal value when plotting door open events on the Sensor graph.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Save:</span> Use this button to save all changes made to the CellarWarden configuration and close the Configuration dialog.</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Cancel:</span> Click this button to abandon any changes to the CellarWarden configuration</span></p><p style="font-weight: bold;"><span style="font-weight: normal;"><span style="font-weight: bold;">Apply:</span> Save all changes in the CellarWarden Configuration dialog without closing.</span></p><span style="font-weight: normal;"><br><br><br></span><p style="font-weight: bold;"></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p><p style="font-weight: bold;"><span style="font-weight: normal;"></span></p></body></html>

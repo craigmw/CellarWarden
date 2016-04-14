@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./help_styles.css">
+<style>
+</style><title>Hardware</title></head>
+<body><h2>Hardware Examples</h2>
+
+    <p>CellarWarden supports many
+different hardware configurations for temperature/humidity monitoring
+and control for a variety of applications. Here are a few examples of
+such hardware configurations.</p><h2>Minimal Setup</h2><img style="width: 800px; height: 712px;" alt="Minimal Configuration" src="CellarWardenMin_bb.jpg"><p>Here, a modest monitoring configuration is shown. A Raspberry Pi is connected via a <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/products/2029">Pi Cobbler Plus</a>
+to a breadboard. A single DS18B20 1-wire temperature probe is connected
+to GPIO 4, with a 4.7k resistor tied to the 3.3 volt rail. A single
+DHT22 temperature/humidity probe is connected via GPIO 5, also with a
+4.7k resistor tied to 3.3V. A single door switch is connected to GPIO
+21, and if the door is closed, this will pull the GPIO pin to 3.3V.
+This configuration is useful for monitoring wine cellars, meat
+lockers, cigar humidors, refrigerators, etc. </p><h2>Complex Monitoring Configuration</h2>
+
+<p><a href="https://github.com/craigmw/CellarWarden/blob/master/CellarWarden_bb.jpg"><img style="border: 0px solid ; width: 800px; height: 600px;" alt="Complex Monitoring" src="CellarWarden_bb.jpg"></a><a href="https://github.com/craigmw/CellarWarden/blob/master/CellarWarden_bb.jpg" target="_blank"><br></a></p>
+
+<p>Shown are two DHT22/AM2302 sensors connected on GPIO pins 5 and 6
+(RPiB+), two DS18B20 1-wire sensors connected in series to GPIO pin 4, a 20 x 4 parallel LCD display based on the <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Hitachi_HD44780_LCD_controller">Hitachi HD44780 display driver</a> and a
+door switch connected to GPIO pin 21 through a <a style="color: rgb(51, 255, 51);" href="http://www.mouser.com/ProductDetail/Toshiba/TLP621-4F/?qs=f0GatGUIxV25OfmkgyzvLw%3D%3D">TLP621 optocoupler</a>.
+This
+optocoupler is required to provide enough current to the LCD backlight,
+while isolating the GPIO pin from the 5V used for this backlight.
+Alternatively, a DPDT microswitch can be used for the door switch,
+allowing 3.3V to be used to switch the GPIO pin high (3.3V) when the
+door is closed while switching 5V to the LCD backlight when the door is
+open. If no LCD is used, just run the common of a SPDT microswitch to
+3.3V and the GPIO pin to the normally open terminal. As the RPi runs at
+3.3V, it is imperative that 5V not be sent to the GPIO pins, as this
+will surely destroy your RPi. While not required, an <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/products/2029">Adafruit Pi
+Cobbler Plus</a> simplifies wiring this up on a breadboard.</p>
+
+<br><h2>Complex Controller Configuration</h2><img style="width: 800px; height: 675px;" alt="Complex Controller Configuration" src="CellarWardenIO_bb.jpg"><p>In
+this example, CellarWarden is configured to control several actuators
+and uses two (up to 8) DS18B20 1-wire temperature sensors, two DHT22
+temp/humidity probes, a 20 x 4 LCD panel over the <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/I%C2%B2C">I2C bus</a>.
+All inputs and outputs are buffered by I2C compatible bi-directional
+logic level shifters (LLS). Three 4-channel bi-directional LLS boards
+similar to <a style="color: rgb(51, 255, 51);" href="https://www.sparkfun.com/products/12009">these</a>
+are used, with all input and output shifted from the RPi's 3.3V output
+to 5V output. These LLS boards are useful, as they shield the RPi from
+damaging high voltages. In addition, they provide sufficient voltage
+and current for driving LCD panels and actuators without causing "brown
+outs" of the RPi's 3.3V line. Also shown is a <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/product/264">realtime clock (RTC) board</a>
+based on the DS1307 chip connected to the buffered I2C bus. This
+provides a means to obtain the current time even if the RPi is not
+connected to the internet (where it normally obtains the current date
+and time). The <a style="color: rgb(51, 255, 51);" href="http://www.sainsmart.com/sainsmart-iic-i2c-twi-serial-2004-20x4-lcd-module-shield-for-arduino-uno-mega-r3.html">I2C-compatible 20 x 4 LCD display</a> in this case is also connected to the I2C bus via an I2C LCD display "backpack" based on the <a style="color: rgb(51, 255, 51);" href="http://www.nxp.com/products/interface-and-connectivity/interface-and-system-management/i2c/i2c-general-purpose-i-o/remote-8-bit-i-o-expander-for-icbus-with-interrupt:PCF8574P">PCF8574 8-bit port expander chip</a>. In
+this case, the LCD address on the I2C bus is 0x27 and the RTC board is
+at 0x68. More information about setting up the I2C bus on an RPi can be
+found <a style="color: rgb(51, 255, 51);" href="https://learn.adafruit.com/adafruits-raspberry-pi-lesson-4-gpio-setup/configuring-i2c">here</a>.</p><p>This
+configuration can be built using a breadboard and Pi Cobbler Plus as
+shown, or can be built into a more permanent configuration using a <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/products/2310">Perma Proto HAT board</a>...</p><p><img style="width: 800px; height: 448px;" alt="CW Pi HAT" src="PiHat.jpg">&nbsp;</p><p>This
+shows an RPi 3 board with the Perma Proto HAT connected to an RTC board
+and a 20 x 4 LCD display over the LLS buffered I2C bus. Note the
+position of the bi-directional LLS boards, three of which are included.
+These three boards provide a total of twelve 5V buffered inputs and outputs: 1-wire
+bus, two DHT-type sensors, the I2C bus, and 7 additional I/O ports that
+can be used for connecting to door switches or actuators. Since the
+buffered outputs are at 5V, these can directly drive&nbsp; <a style="color: rgb(51, 255, 51);" href="http://www.sainsmart.com/4-channel-5v-relay-module-for-pic-arm-avr-dsp-arduino-msp430-ttl-logic.html">mechanical</a> and <a style="color: rgb(51, 255, 51);" href="http://www.sainsmart.com/sainsmart-4-channel-5v-solid-state-relay-module-board-omron-ssr-avr-dsp-arduino.html">solid state relay (SSR)</a> boards developed for the <a style="color: rgb(51, 255, 51);" href="https://www.arduino.cc/">Arduino</a>.
+Despite its compact size, this configuration will support seven actuators
+or door switches. If more buffered I/O is needed, additional LLS boards
+may be employed, but this would not likely fit onto a Perma Proto HAT
+board.</p><p><br></p>
+
+</body></html>

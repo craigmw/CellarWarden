@@ -1,0 +1,98 @@
+.cfgCurrCtrlID {
+    height: 20px;
+    font-color: ffffff;
+}
+
+/* Controllers dialog styles */
+.ctrlsBanner {
+    float: left;
+    height: 70px;
+    width: 680px;
+    //padding: 120px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    border: 2px solid #333;
+    border-radius: 8px;
+    background-color: #333344;
+    /*
+    background: -webkit-linear-gradient(left, #041261, #F27202);  
+    background: -o-linear-gradient(right, #041261, #F27202);      
+    background: -moz-linear-gradient(right, #041261, #F27202);    
+    background: linear-gradient(to right, #041261, #F27202);  
+    */ 
+    display: inline-block;
+    vertical-align: middle;  
+    
+}
+
+.ctrl, .ctrlAddBtn, .ctrlDelBtn {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.ctrlsBanner1 {
+    float: right;
+    position: relative;
+    right: 20%;
+    text-align left;
+    //text-align: center;
+    padding: 4px;
+    margin: 1px;
+    //display: flex;
+    align-items: bottom;
+    //border: thin dotted blue;
+    vertical-align: middle;
+}
+
+.cfgCurrCtrl1 .ui-selectmenu {
+    float: right;
+    vertical-align: bottom;
+    top: 25px;
+    padding: 14px;
+    margin: 10px;
+    //line-height: 25px;
+}
+
+.ctrlDiv {
+    //height: 360px;
+    //overflow: auto;
+}
+
+legend {
+    padding: 0.2em 0.5em;
+    border: 1px solid white;
+    color: #00ff00;
+    font-size:100%;
+    text-align:left;
+    border-radius: 4px;
+    background-color: #444444;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+    font-weight: bold;
+
+}
+
+.ctrlFieldDiv {
+    display: table;
+    border: 1px solid #333333;
+    color: white;
+    border-radius: 4px;
+    background-color: #222222;
+    margin-top: 10px;
+    margin-left: 12px;
+    box-shadow: inset 1px 1px 5px #EEEEEE;
+}
+
+#ctrlSensorID {
+    height: 200px;
+    overflow-y: scroll;
+}
+
+#ctrlSensorID .ui-selectmenu {
+    float: right;
+    vertical-align: middle;
+    height: 200px;
+    overflow-y: scroll;
+}
+
+.menu-button + .ui-selectmenu-button{
+    vertical-align: middle;
+}

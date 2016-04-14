@@ -1,0 +1,35 @@
+
+
+/* Help styles */
+.help_banner {
+    text-align: center;
+}
+
+.help_logo {
+    text-align: center;
+    color: #ffeeff;
+    font-size: 24px;
+    font-family: Papyrus;
+    text-shadow: 4px 2px #000000;
+}
+
+.help_version{ 
+    text-align: center;
+    color: #ffeeff;
+    font-size: 18;
+    font-family: Papyrus;
+    text-shadow: 4px 2px #000000;
+}
+
+.help_topics {
+    text-align: center;
+    color: #ffffff;
+    font-size: 18px;
+    font-family: Arial;
+    //text-shadow: 4px 2px #000000;
+}
+
+.help_text {
+    color: #ffff;
+    font-family: Arial;
+}

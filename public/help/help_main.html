@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./help_styles.css">
+<style>
+</style><title>Main</title></head>
+<body>
+
+    <h2>Main Window</h2><p>The main window in CellarWarden
+presents information about the status of sensors and controllers that
+have been set up and provides a means to configure the server that
+operates in the background on the Raspberry Pi. The main window is
+broken into two parts, the banner at the top and the graph window that
+displays logged data.</p><img style="width: 1259px; height: 857px;" alt="Main Sensors" src="MainSensors.jpg"><br><br><h2>The Banner</h2><p>CellarWarden presents a banner at the top of the main window
+showing buttons that allow configuration of CellarWarden, the title and
+a virtual LCD display.&nbsp;</p><p></p><p><span style="font-weight: bold;">Buttons</span></p><p><span style="font-weight: bold;">Configure</span>: Opens the <a style="color: rgb(51, 255, 51);" href="help_config.html">Configuration Dialog</a> to configure overall operations of CellarWarden.</p><p><span style="font-weight: bold;">Controllers</span>: Opens up the <a style="color: rgb(51, 255, 51);" href="help_controllers.html">Controllers Dialog</a> to allow configuration of each controller.</p><p><span style="font-weight: bold;">Alarms</span>: Click this to configure alarms using the <a style="color: rgb(51, 255, 51);" href="help_alarms.html">Alarms Dialog</a>.</p><p><span style="font-weight: bold;">Help</span>: Click this to open the CellarWarden help pages.</p><br><h2>LCD Display</h2><p>A
+virtual LCD display is shown at the right of the banner and provides
+realtime updates of the status of CellarWarden. This displays the same
+information as a hardware LCD display if one is connected to the
+Raspberry Pi. If no controllers are
+active, this display only shows a single page.</p><p><span style="font-weight: bold;">LCD Page 1:</span></p><img style="width: 365px; height: 131px;" alt="Main LCD1" src="MainLCD1.jpg"><p>This page shows the current date and time, the temperature and humidity values from DHT1 (a temperature/humidity sensor),
+and the temperature detected on onew1, a DS81B20 1-wire temperature
+probe. When CellarWarden is first started, this bottom row will show
+the IP address of the server for one minute. If an Alarm has been
+triggered, the bottom row will instead indicate that an Alarm has been
+triggered until the Clear Active Alarms button is pressed (more
+information about this is available in the <a style="color: rgb(51, 255, 51);" href="help_alarms.html">Alarms dialog</a>).&nbsp;</p><p></p><p style="font-weight: bold;">LCD Page 2, etc.:</p><p>If
+one or more controllers are active, CellarWarden will display the
+status of each active controller by toggling the page, showing each
+controller in round-robbin fashion as well as LCD page 1...</p><img style="width: 375px; height: 139px;" alt="Main LCD 2" src="MainLCD2.jpg"><p><span style="font-weight: bold;">Row 1</span>: Displayed here are the controller number (Ctrl 0) and the name of the controller (Fermentor 1).</p><p><span style="font-weight: bold;">Row 2</span>: The input (process variable/PV) and the name of the primary sensor (onew1) are displayed.</p><p><span style="font-weight: bold;">Row 3</span>: The setpoint (SP) and output (OutP) are shown. <span style="font-weight: bold;">OutP</span> designates that this controller is using PID mode, whereas a controller using Hysteresis mode will display <span style="font-weight: bold;">OutH</span>.</p><p><span style="font-weight: bold;">Row 4</span>:
+The status of the controller is shown here. &nbsp;In this case, the
+controller is heating. This row may also display- Cooling, Humidifying,
+Dehumidifying, Waiting to Heat, Waiting to Cool, Waiting to Humid.,
+Waiting to Dehumid. The latter 4 status messages indicate that an
+actuator on the controller has been set with a delay to prevent rapid
+cycling and is waiting for the delay to elapse before engaging the
+actuator. The status line will show the prefix "<span style="font-weight: bold;">AH</span>" or "<span style="font-weight: bold;">AC</span>" if the heating/humidifying or cooling/dehumidifying actuator is being autotuned, respectively.&nbsp; </p><p></p><p></p><h2>Graph Window - Sensors tab</h2><p>The graph section is tabbed, and allows viewing of the Sensors graph and the Controller graph. The <span style="font-weight: bold;">Sensors</span> tab opens the main graph window, and the <span style="font-weight: bold;">Controller</span> tab shows logged data for a selected controller. </p><br style="font-weight: bold;"><img style="width: 1259px; height: 857px;" alt="Sensors tab" src="MainSensors.jpg"><br><p>Displayed
+is a graph of all active sensors, including DHT-type temp/humidity
+sensors, DS18B20 1-wire sensors and door switches. Also,
+annotations&nbsp;marked by a small box enclosing a number next to a
+specific plot line indicate an alarm has been triggered for that
+sensor.&nbsp;</p><p></p><p style="font-weight: bold;">Legend</p><p>A
+legend is shown at the top right of the window if the mouse pointer is
+placed over the graph. This will display the date/time and various
+sensor values for the selected time. Note that data will only be
+plotted for active sensors. Door open/close events are shown near the
+bottom of the plot. If the mouse pointer is moved off of the graph
+window, the legend is hidden.&nbsp;</p><p></p><span style="font-weight: bold;">The Roll Window</span><p>A small input box to the bottom left of the graph is the Roll Window...</p><p><img style="width: 261px; height: 270px;" alt="Roll Window" src="MainSensorsRoll.jpg"></p><p>This applies a <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Moving_average">rolling average</a>
+to the displayed data, and defaults to 10, meaning that each displayed
+data point is the rolling average over 10 samples. Set this to 1 to
+show unaveraged results.&nbsp;</p><br><br><h2>Graph Window - Controller tab</h2><img style="width: 1269px; height: 869px;" alt="Main Controller" src="MainController.jpg"><p><span style="font-weight: bold;">Controller Banner</span></p><p>The
+Controller window shows logged data on a selected controller. The
+banner at the top of this window allows a means to select a specific
+controller using a dropdown menu...</p><p><img style="width: 1264px; height: 137px;" alt="Controller Banner" src="MainControllerBanner.jpg"></p><p>Filename: Shows the filename associated with the selected controller.</p><p>Sensor: Displays the primary sensor name for this controller.</p><p>Status: Shows if the controller is active or inactive.</p><p>Profile:
+Displays the name of the Profile if it has been loaded for this
+controller. Also shows if the profile is running or stopped (<span style="font-weight: bold;">Stopped</span>).</p><p></p><p><span style="font-weight: bold;">Legend:</span></p><img style="width: 237px; height: 196px;" alt="Controller Legend" src="MainController_legend.jpg"><p>Shows
+the time/date, the input (process variable), the setpoint and the
+output value for the heating/humidifying or cooling/dehumifying
+actuator on the selected controller.</p><p style="font-weight: bold;">The Roll Window:</p><p>As
+with the Sensors window, the graph in the Controller window has a roll
+window box. This defaults to 1 to show unaveraged values for the
+controller. This may be set to &gt; 1 to apply a rolling average,
+however note that this may make it appear that cooling and heating
+actuators are active at the same time near crossover points (periods in
+which the input/PV crosses the setpoint line). This is merely an
+artifact of
+averaging as the heating/humidifying and cooling/dehumidifying
+actuators cannot be active simultaneously. </p><p></p></body></html>

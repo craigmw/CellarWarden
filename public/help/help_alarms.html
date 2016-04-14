@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html><head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="./help_styles.css">
+<style>
+</style><title>Alarms</title></head>
+<body><h2>Alarms</h2>
+
+    <p>CellarWarden provides a means for
+monitoring its operations and can be set up to send alarm notifications
+if a specified sensor is outside of its normal working range. These
+alarm notifications are sent to specified email addresses and can
+trigger SMS/text messages to be sent via a cell phone.</p><br><p>Alarm Notification</p><p>If an alarm is triggered while the CellarWarden client app is open, a notification will pop up...</p><p><img style="width: 391px; height: 190px;" alt="Alarm Warning" src="AlarmWarning.JPG"></p><p>This will also be apparent in the LCD display on the last row...</p><p><img style="width: 371px; height: 132px;" alt="Alarm LCD display" src="AlarmLCD.JPG"></p><p>If
+one or more email addresses are set up in the Alarms Dialog, email
+messages and/or SMS/text messages will be sent to indicate the alarm
+condition.&nbsp;</p><p>In addition, the sensor that triggered the alarm will be indicated on the graph in the <span style="font-weight: bold;">Sensors</span> tab when the mouse pointer hovers over the annotation box (labeled "2" in the example below)...</p><p><img style="width: 461px; height: 171px;" alt="Alarm Annotation" src="AlarmAnnotation.JPG"></p><h2>Alarms Configuration dialog</h2><p>The Alarms configuration may be set up by clicking the <span style="font-weight: bold;">Alarms</span> button on CellarWarden's banner.</p><p><span style="font-weight: bold;">General</span></p><p>This tab encompasses general features of the Alarms function...</p><p><img style="width: 905px; height: 575px;" alt="Alarms General" src="AlarmGeneral.JPG"></p><p><span style="font-weight: bold;">Alarms Control</span></p><p><span style="font-weight: bold;">Activate Alarms:</span> Select this control as True when monitoring is desired.</p><p><span style="font-weight: bold;">AutoClear Alarms:</span>
+Select this control as True when it is desired to automatically clear
+triggered alarms so that the alarm is not retriggered when the alarm
+condition has not been rectified. When true, the Activate Alarms
+control will be set to false to prevent additional alarm notifications.</p><p><span style="font-weight: bold;">Block Mult. Emails</span> Select this control as True to prevent the sending of multiple email and/or text/SMS messages.</p><p><span style="font-weight: bold;">Clear Active Alarms:</span>
+Click this button after an alarm has been triggered. This will turn off
+the client notification and return the LCD display operation to normal.</p><p><span style="font-weight: bold;">Show Alarm History:</span> Click this button to show a list of previously triggered alarms.</p><p><span style="font-weight: bold;">Clear Alarm History:</span>
+Click this button to delete previously triggered alarms from the Alarm
+History. This will also remove any alarms annotations from the sensors
+graph.</p><p><span style="font-weight: bold;">Alarm Email/SMS Notificatons</span></p><p><span style="font-weight: bold;">From Email Service: </span>Name of the service provider for an email account that serves as the sender.&nbsp;</p><p><span style="font-weight: bold;">Sender: </span>Address of
+an email account that serves as the sender. It is suggested that a new
+account devoted to CellarWarden be set up using a free email service
+such as Gmail or Yahoo.</p><p><span style="font-weight: bold;">Sender PW: </span>Password for the sender email account.</p><p><span style="font-weight: bold;">To Email1/Email2: </span>Addresses
+for email accounts that serve as receivers of alarms notifications.
+Each field can receive more than one email address by separating the
+different email addresses with commas. To send SMS/text messages, use
+your email provider's email address that will result in the
+transmission of an SMS/text message. For example, to send to a Verizon
+phone, use the format 1234567890@vtext.com, where the numbers in front
+represent the area code and phone number of that account. More
+information about sending SMS/text messages by email are provided <a style="color: rgb(51, 255, 51);" href="http://www.digitaltrends.com/computing/how-to-send-free-text-messages-online/">here</a>.</p><p><span style="font-weight: bold;">Send Test Email: </span>Click
+this button to send a test email notification to each email address
+listed in the above two fields. It is imporant to verify that alarm
+notifications will be sent properly.</p><br><br><span style="font-weight: bold;">Temperature</span><br><br><p>This tab is used to configure alarm conditions for temperature probes...</p><p><img style="width: 904px; height: 569px;" alt="Alarm Temp" src="AlarmTemp.JPG"> </p><p>Currently,
+two temperature probes may be monitored although future versions will
+include the ability to monitor additional temperature sensors.</p><p><span style="font-weight: bold;">Monitoring:</span> Click on True to monitor this sensor.</p><p><span style="font-weight: bold;">Sen. 1/Sen. 2:</span> Select the temperature sensor from one of the two DHT-type sensors, or one of two 1-wire sensors (onew1, "OW1"; onew2, "OW2").<span style="font-weight: bold;"></span></p><p><span style="font-weight: bold;">Temp Maximum/Temp Minimum:</span>
+Use these controls to enter a temperature range between minimum and
+maximum values for this sensor. If the sensor returns a value outside
+of this range, an alarm event will be triggered and the user notified.</p><p><span style="font-weight: bold;">Alarm Delay:</span>
+An alarm will trigger after the alarm condition has been met for this
+delay. This prevents an alarm from being triggered spuriously, e.g. by a
+temporary increase in temperature due to opening a door.</p><p><span style="font-weight: bold;">Label:</span> Provide a short name for this sensor to use in alarm notifications.</p><p><span style="font-weight: bold;">Humidity</span></p><p><span style="font-weight: bold;"><img style="width: 903px; height: 571px;" alt="Alarm Humd" src="AlarmHumd.JPG"></span></p><p><span style="font-weight: bold;">Monitoring:</span> Click on True to monitor this sensor.</p><p><span style="font-weight: bold;">Sensor 1/Sensor2:</span> Select from DHT1 or DHT2.</p><p><span style="font-weight: bold;">Humidity Minimum/Maximum: </span>Set a range for humidity for this condition.</p><p><span style="font-weight: bold;">Alarm Delay:</span> As above.</p><p><span style="font-weight: bold;">Label:</span> Provide a short name for this sensor to use in alarm notifications.</p><p></p><p><span style="font-weight: bold;">Doors</span></p><p><img style="width: 905px; height: 569px;" alt="Alarm Doors" src="AlarmDoors.JPG"></p><p><span style="font-weight: bold;">Monitoring:</span> Click on True to monitor this door sensor.</p><p><span style="font-weight: bold;">Alarm Delay:</span> If the door is left open for a period longer than this value, an alarm will be triggered.</p><p><span style="font-weight: bold;">Label:</span> Provide a short name for this door sensor to use in alarm notifications.</p><p style="font-weight: bold;">Power and Status</p><p>These tabs are currently non-functional but will be added in future updates of CellarWarden.</p><p></p><p><span style="font-weight: bold;">Save</span></p><p>Click this button to save all changes in the Alarms dialog.</p><p></p><p style="font-weight: bold;">Cancel</p><p>Click this button to cancel any changes and close the Alarms dialog.</p><p></p><p></p><p></p><p></p><br><p></p><p></p><p></p><p></p>
+
+</body></html>

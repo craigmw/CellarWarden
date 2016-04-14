@@ -39,7 +39,7 @@ can be monitored to ensure that&nbsp;cellar or fermentation doors
 have
 not been left open
 for too long. Alarm functions can be set to only be activated when a
-condition has been met for a set time (as configured in the <a style="color: rgb(51, 255, 51);" href="help_alarms.html">Alarms
+condition has been met for a set time (as configured in the <a style="color: rgb(51, 255, 51);" href="/public/help/help_alarms.html">Alarms
 Configuration dialog</a>). The server daemon is programmed in
 Node.js and the
 client app is handled by Javascript.&nbsp;</p>

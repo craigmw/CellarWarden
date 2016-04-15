@@ -3,7 +3,9 @@
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="./help_styles.css">
 <style>
-</style><title>Overview</title></head>
+</style><title>Overview</title>
+
+</head>
 <body>
 <h2><a id="user-content-overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
 <p>CellarWarden is an application that runs on the Raspberry Pi
@@ -101,7 +103,8 @@ is proprietary and is not supported by the Dallas One Wire protocol. </p>
 <p>In addition to these, two Dallas One Wire temperature sensors
 may
 also be configured. In this case, a single GPIO pin is required,
-regardless of the number of One Wire sensors (e.g. <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/products/374">DS18B20</a>). Each
+regardless of the number of One Wire sensors (e.g. <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/products/374">DS18B20</a>).
+Each
 DHT11/DHT22/AM2302 and the Dallas One Wire bus requires the data line
 to be pulled high (3.3V or 5V) via a 4.7K Ohm resistor in series
 between Vcc
@@ -159,7 +162,8 @@ Examples</a> help page.</p>
 <p><a href="https://www.brewershardware.com/12-Stainless-Steel-Thermowell-TWS12.html"><br>
 </a></p>
 <h2><a id="user-content-installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
-<p>Purchase an RPi B, B+, RPi2 or RPi3 along with an SD Card (8GB+,
+<p>Purchase an RPi B, B+, RPi2 or RPi3 along with an SD Card
+(8GB+,
 Class 10
 recommended) and a micro-USB power adapter. A WiFi dongle such as <a style="color: rgb(51, 255, 51);" href="http://www.amazon.com/Edimax-EW-7811Un-150Mbps-Raspberry-Supports/dp/B003MTTJOY">this</a>
 is highly recommended (although this is not needed on the RPi3 as this
@@ -181,7 +185,8 @@ microSD card slot on the RPi and plug the microUSB power adapter in to
 power it up. The RPi can be accessed by connecting a keyboard to one of
 the USB ports, as well as a monitor to is HDMI port. However, it is
 possible to access the RPi command line shell through an ethernet
-connection via SSH (Secure Shell) using <a style="color: rgb(51, 255, 51);" href="http://www.putty.org/">PuTTY</a> (Windows) or the Mac OS X
+connection via SSH (Secure Shell) using <a style="color: rgb(51, 255, 51);" href="http://www.putty.org/">PuTTY</a>
+(Windows) or the Mac OS X
 Terminal. Thus, it is recommended that the RPi be connected by an
 ethernet cable into an empty port on a nearby router or switch. More
 information about this can be found <a style="color: rgb(51, 255, 51);" href="http://www.raspberrypi.org/documentation/remote-access/ssh/">here</a>.</p>
@@ -210,16 +215,28 @@ password</a>.</p>
 <div class="highlight highlight-bash">
 <pre>sudo apt-get update -y <span class="pl-k">&amp;&amp;</span> apt-get upgrade<br>sudo reboot</pre>
 </div>
-<p></p><p>With the RPi functioning properly, we can now install
+<p></p>
+<p>With the RPi functioning properly, we can now install
 CellarWarden. </p>
 <p>First, we must install Node.js (Node versions 4.2.1 and 4.4.2
 are currently
 supported). Note
 that recent versions of Raspian Jesse include an older version of
-Node.js, and this must be uninstalled in order to run CellarWarden. &nbsp;To determine if node.js is already installed, type:</p><br><div class="highlight highlight-bash">
-<pre>node -v<br>npm -v</pre></div><br>If either node.js or npm is installed, use the following commands to remove them so we can install a new copy of node.js:
-<br><div class="highlight highlight-bash"><pre>sudo apt-get remove nodejs<br>sudo apt-get remove npm</pre>
-</div><br><p>To
+Node.js, and this must be uninstalled in order to run CellarWarden.
+&nbsp;To determine if node.js is already installed, type:</p>
+<br>
+<div class="highlight highlight-bash">
+<pre>node -v<br>npm -v</pre>
+</div>
+<br>
+If either node.js or npm is installed, use the following commands to
+remove them so we can install a new copy of node.js:
+<br>
+<div class="highlight highlight-bash">
+<pre>sudo apt-get remove nodejs<br>sudo apt-get remove npm</pre>
+</div>
+<br>
+<p>To
 install the latest Raspbian version of Node.js, type the following: </p>
 <div class="highlight highlight-bash">
 <pre>curl -sL https://deb.nodesource.com/setup_4.x | sudo bash -<br>sudo apt-get install -y build-essential python-dev nodejs npm</pre>
@@ -268,7 +285,8 @@ change the configuration in /boot/config.txt. To do so:</p>
 <div class="highlight highlight-bash">
 <pre><span class="pl-s3">cd</span> /boot<br>sudo nano config.txt</pre>
 </div>
-<p></p><p>At the bottom of this file, add the following lines:</p>
+<p></p>
+<p>At the bottom of this file, add the following lines:</p>
 <div class="highlight highlight-bash">
 <pre><span class="pl-c">#For OneWire functionality</span><br>dtoverlay=w1-gpio,gpiopin=4</pre>
 </div>
@@ -318,7 +336,8 @@ server daemon.&nbsp;</p>
 <p>It is unlikely that an ethernet port is located near your wine
 cellar or refrigerator. For this reason, it is recommended to use a
 WiFi dongle to access your WiFi network. Note that a WiFi dongle is not
-necessary if you are using an RPi3, as these have built-in WiFi.&nbsp; <a style="color: rgb(51, 255, 51);" href="http://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md">This
+necessary if you are using an RPi3, as these have built-in
+WiFi.&nbsp; <a style="color: rgb(51, 255, 51);" href="http://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md">This
 information</a> is
 useful for setting up WiFi access with typical WiFi dongles that can be
 plugged into an open USB port on the RPi.</p>
@@ -333,17 +352,25 @@ temperature and humidity, even if the WiFi connection drops. However,
 the web app will be unable to connect until the WiFi is re-established.</p>
 <h2><br>
 <a id="user-content-emailsms-alarms" class="anchor" href="#emailsms-alarms" aria-hidden="true"><span class="octicon octicon-link"></span></a></h2>
-<h2>Realtime Clock</h2><p>CellarWarden is highly dependent on the
+<h2>Realtime Clock</h2>
+<p>CellarWarden is highly dependent on the
 correct time, as it logs significant amounts of time-sensitive data.
 The RPi does not have a built-in RTC, and instead, obtains its time
 from the internet. If the RPi is unable to connect to the internet, the
-time on the RPi will be incorrect and this will adversely affect operations of CellarWarden. To address this and ensure that
+time on the RPi will be incorrect and this will adversely affect
+operations of CellarWarden. To address this and ensure that
 CellarWarden always has the correct time regardless of internet
 connectivity, an RTC board may be connected to the RPi via its I2C
-pins. Adafruit offers a <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/product/264">DS1307-based I2C RTC board</a>
+pins. Adafruit offers a <a style="color: rgb(51, 255, 51);" href="https://www.adafruit.com/product/264">DS1307-based I2C
+RTC board</a>
 in kit form that requires minimal soldering and can be directly
-connected to the RPi's 3.3V line and I2C pins without the need for logic level
-shifters. More information about this is included in the <a style="color: rgb(51, 255, 51);" href="help_hardware.html">Hardware Examples page</a> and is also available <a style="color: rgb(51, 255, 51);" href="https://learn.adafruit.com/adding-a-real-time-clock-to-raspberry-pi">here</a>.</p><h2><br></h2><h2>Email/SMS Alarms</h2>
+connected to the RPi's 3.3V line and I2C pins without the need for
+logic level
+shifters. More information about this is included in the <a style="color: rgb(51, 255, 51);" href="help_hardware.html">Hardware
+Examples page</a> and is also available <a style="color: rgb(51, 255, 51);" href="https://learn.adafruit.com/adding-a-real-time-clock-to-raspberry-pi">here</a>.</p>
+<h2><br>
+</h2>
+<h2>Email/SMS Alarms</h2>
 <p>CellarWarden can send alarm notifications to specified email
 addresses if conditions are set in the Alarms dialog. For emails and
 SMS messages, it is necessary to provide an email account name and
@@ -386,7 +413,9 @@ many internet service providers provide dynamic instead of static IP
 addresses, meaning that the IP used to connect the home LAN will change
 over time. Thus, it is difficult to access the RPi if this IP address
 changes. To address this issue, it is necessary to use a dynamic IP
-address service like <a style="color: rgb(51, 255, 51);" href="http://dyn.com/dns/?rdr=dyndnsorg">dyndns.org</a> or <a style="color: rgb(51, 255, 51);" href="http://www.noip.com/">no-ip.com</a>. Once you sign up for this service, it
+address service like <a style="color: rgb(51, 255, 51);" href="http://dyn.com/dns/?rdr=dyndnsorg">dyndns.org</a>
+or <a style="color: rgb(51, 255, 51);" href="http://www.noip.com/">no-ip.com</a>. Once you
+sign up for this service, it
 is possible to access the RPi using your dynamic IP service, such
 myname.dyndns.org. A second issue is that while the router that
 connects to the outside internet may have a particular IP address, this
@@ -394,7 +423,8 @@ single address is not sufficient to identify the RPi on the local LAN.
 Thus, while the RPi may have a local IP address like 192.168.1.50,
 typing this address in the address bar of a web browser on a device
 outside of that LAN would not find the RPi. To address this issue, it
-is necessary to use <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Port_forwarding">port forwarding</a>, a method to assign a unique
+is necessary to use <a style="color: rgb(51, 255, 51);" href="https://en.wikipedia.org/wiki/Port_forwarding">port
+forwarding</a>, a method to assign a unique
 address to a device on the home LAN that can be accessed from outside
 of that LAN. Port forwarding is typically set up in your router (e.g.
 "wireless router"). Since each router's software handles port
@@ -409,6 +439,39 @@ translation function to translate the remote port to point to 8888 on
 the RPi's IP. While unnecessary for alarm functionality, setting up
 remote access provides a means to check on the status of your cellar or
 refrigerator while away from your local LAN.</p>
+<br><p></p><a id="user-content-reliability" class="anchor" href="#reliability" aria-hidden="true"><span class="octicon octicon-link"></span></a>
+<h2>Reliability</h2>
+<p>With the provision of controller functionality, reliability is of
+paramount concern. If the RPi crashes for some unforseen reason, this
+could leave an actuator on or off, resulting in potentially disasterous
+results. To prevent the potential for dangerous conditions, it is
+strongly recommended that appliances connected to the RPi via relay
+boards be rated to power levels that will not result in hazardous
+situations. For example, only low wattage heaters should be used to
+control fermentation temperatures so that, should the RPi become
+unstable, an actuator stuck "on" would not lead to significant
+overheating of associated appliances that might constitute a hazard.
+Similarly, if the RPi crashes with a cooling actuator stuck in an
+energized state, there is the potential that the freezer may remain
+active, leading to freezing of contents inside the appliance. <b>The
+user of this software thus acknowledges the potential for such
+situations and assumes all responsibilities associated with the
+implementation and usage of this software</b>. To mitigate these
+situations, it is suggested that hardware methods be employed to
+minimize the impact of a crashed RPi. For example, on chest freezers
+and refrigerators with thermostatic controls, it is suggested that the
+thermostat be set to a point that will avoid temperatures below
+freezing. If the actuator on the RPi remains active due to software or
+hardware malfunction, the hardware thermostat will turn off the
+compressor before the freezer reaches a temperature below freezing. As
+an additional measure to address such concerns, the user may employ a
+software "watchdog timer," as described in this <a style="color: rgb(51, 255, 51);" href="https://www.domoticz.com/wiki/Setting_up_the_raspberry_pi_watchdog">article</a>.
+This method utilizes a watchdog timer built into the Broadcom processor
+on board the RPi, although this will not ensure that all crash
+conditions on the RPi are caught. As a better method, hardware
+"watchdog" circuits are available to monitor the RPi to ensure that the
+RPi remains operational and will automatically reboot the RPi if it
+should crash. An example of such circuits is available <a style="color: rgb(51, 255, 51);" href="http://www.amazon.com/SwitchDoc-Labs-WatchDog-Arduino-Raspberry/dp/B00OL1N7R2">here</a>. More information about the use of such a hardware watchdog timer is described in this <a style="color: rgb(51, 255, 51);" href="http://www.instructables.com/id/Raspberry-Pi-and-Arduino-Building-Reliable-Systems/step2/How-to-Set-Up-the-Raspberry-Pi-Internal-WatchDog-T/">Instructable</a>. </p>
 <h2><br>
 <a id="user-content-updating-cellarwarden" class="anchor" href="#updating-cellarwarden" aria-hidden="true"><span class="octicon octicon-link"></span></a></h2>
 <h2>Updating CellarWarden</h2>

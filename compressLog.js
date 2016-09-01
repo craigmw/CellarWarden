@@ -42,28 +42,31 @@ var lastKept = 0;
 //Load alarms logfile to make sure that these records not deleted.
 // If alarms logfile does not exist, ignore.
 utils.log('Reading alarms logfile: ' + alarmsLogFile );
-csv
-   .fromPath( alarmsLogFile )
-   .on("data", function(data) {
-      record = data.toString();
-      field = record.split(',');
-      timeStamp = Date.parse( field[0] );
-      alarmRecord[ alarmRecords ] = field[0];
-      //process.stdout.write( alarmRecords + ": " + timeStamp + "-" + record + '\r');
-      alarmRecords++;
-   })
-   .on("end", function(){
-       utils.log("\n Done");
-       //Display alarm logfile records.
-       /* if( verbose ) {
-           utils.log( 'Displaying loaded alarm records...');
-           for (var i = 0; i < alarmRecords; i++) {
-               utils.log( 'alarmRecord[' + i + ']: ' + alarmRecord[i] );
-           };
-       }; */
-       parseLogFile(); 
-       
-});
+if ( utils.fileExists( alarmsLogFile ) ) {
+    csv
+        .fromPath( alarmsLogFile )
+        .on("data", function(data) {
+            record = data.toString();
+            field = record.split(',');
+            timeStamp = Date.parse( field[0] );
+            alarmRecord[ alarmRecords ] = field[0];
+            //process.stdout.write( alarmRecords + ": " + timeStamp + "-" + record + '\r');
+            alarmRecords++;
+        })
+        .on("end", function(){
+            utils.log("\n Done");
+            //Display alarm logfile records.
+            /* if( verbose ) {
+                utils.log( 'Displaying loaded alarm records...');
+                for (var i = 0; i < alarmRecords; i++) {
+                    utils.log( 'alarmRecord[' + i + ']: ' + alarmRecord[i] );
+                };
+            }; */
+            parseLogFile(); 
+    });
+} else {
+    utils.log('Alarm file does not exist. Skipping...');  
+};
 
 //parseLogFile: Parse logfile to copy valid records to temporary logfile
 function parseLogFile() {

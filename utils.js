@@ -224,6 +224,20 @@ exports.log = function( text, color, timestamp, emit ) {
     */        
 }; 
 
+//fileExists() - checks for existence of file.
+//  filename - name of file (including path)
+//  returns - true (file exists) or false (file does not exist)
+exports.fileExists = function( filename ) {
+    var retVal = false;
+    try {
+        fs.accessSync( filename, fs.F_OK );
+        retVal = true;
+    } catch (e) {
+        retVal = false;
+    };
+    return retVal;
+};
+
 //deleteFile() - deletes files
 exports.deleteFile = function( fileName, callback ) {
     console.log( 'Deleting file ' + fileName + '...');

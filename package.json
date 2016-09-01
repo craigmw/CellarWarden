@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/craigmw/CellarWarden",
   "dependencies": {
-    "cron-job": "^1.0.2",
+    "cron": "^1.1.0",
     "ds18x20": "^0.2.0",
     "express": "^4.10.6",
     "fast-csv": "^1.1.0",

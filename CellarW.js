@@ -29,8 +29,7 @@ var localIp = require('ip');
 var gpio = require('rpi-gpio');
 var nodemailer = require('nodemailer');
 var justify = require('justify');
-var cronjob = require('cron-job');
-
+var CronJob = require('cron').CronJob;
 
 //Settings - defaults: store these in config.json; note: all pins refer to GPIO numbers
 
@@ -375,10 +374,6 @@ setInterval(function(){
         //Processing controllers....
         ctrls = ctrl.process( ctrls, sensorData, config.logIncrement );
     };
-
-    //Run scheduled jobs if correct time of day.
-    runJobs( currTime );
-    
 
 }, sampleRate );
 //********************************* END OF MAIN ******************************************
@@ -944,7 +939,7 @@ io.sockets.on('connection', function( socket ){
     socket.on( 'showAlarmsLog', function() {
         fs.readFile( alarmsLogFile, 'utf8', function(err, data) {
             if (err) {
-                data = 'Could not alarms history file.';
+                data = 'Could not read alarms history file.';
                 utils.log( data );
             };
             socket.emit( 'alarmsLogReturn', data );
@@ -1338,6 +1333,19 @@ function almClearAll( almData ) {
     almData.powerDurCount1 = 0;
 };
 
+//almCreateAlarmLogFile: creates alarm logfile if it does not exist.
+function almCreateAlarmLogFile() {
+    if (!utils.fileExists( alarmsLogFile ) ) {
+    	fs.writeFile( alarmsLogFile, "", function(err){
+    		if (err ) {
+    			utils.log('Unable to create alarms logfile ' + alarmsLogFile );
+    		} else {
+    		    utils.log('Created alarms logfile ' + alarmsLogFile );	
+    		};
+    	});
+    };
+};
+
 //almClearAlarmLogFile: clears out alarm logfile
 function almClearAlarmLogFile() {
     //Overwrite alarms logfile by writing blank string.
@@ -1402,7 +1410,9 @@ function updateConfig( configAction ) {
                         } else {
                             utils.log('Config.json corrupted. Loading default config...' );
                         };
+                        almCreateAlarmLogFile();
                         resetHardware();
+                        resetCronJobs();
                     };
                 });
             } else {                     //config file does not exist, so make a new one
@@ -1411,7 +1421,9 @@ function updateConfig( configAction ) {
                         utils.log('Could not write new configuration file ' + config.configFile);
                     } else {
                         utils.log('Wrote configuration file ' + config.configFile);
+                        almCreateAlarmLogFile();
                         resetHardware();
+                        resetCronJobs();
                     };
                 });
             };
@@ -1424,7 +1436,9 @@ function updateConfig( configAction ) {
                utils.log('Could not write new configuration file ' + config.configFile);
             } else {
                 utils.log('Wrote configuration file ' + config.configFile);
+               almCreateAlarmLogFile(); 
                resetHardware();
+               resetCronJobs();
             };
         });
     };
@@ -1503,6 +1517,23 @@ function resetHardware() {
         });
     };
 };  
+
+//resetCronJobs: Sets up or resets cron to run jobs at specified times.
+function resetCronJobs() {
+
+	//Set up cronjob to compress logfile
+	var cmpTime = config.cmpExecuteTime.split(":");
+    var cmpHours = cmpTime[0];
+    var cmpMins = cmpTime[1];
+    var cronString = '00 ' + cmpMins + ' ' + cmpHours + ' * * *';
+	utils.log( 'Setting up cronjob to compress logfile at ' + config.cmpExecuteTime + '...');    
+    var job0 = new CronJob( cronString, function() {
+        compressLogFile ( config );
+    }, null, true, null );
+
+    //Set up cronjob to send a status report.
+
+};
 
 //If client has updated alarms.json (or on startup), reload this file. Also, initialize alarm process.
 function updateAlarms( alarmsAction, cfg ) {
@@ -1636,40 +1667,6 @@ function gpioReadInput( pin, label ) {
 
     //utils.log( 'retValue: ' + retValue );
     //return retValue;
-};
-
-//runJobs: Check if jobs exist at current time, and if so, run them once.
-//  Uses the following global variables: logCompressTime (last time logCompress run; statusTime (last time status email sent).
-function runJobs( timeNow ) {
-    var hoursNow = timeNow.getHours();
-    var minsNow = timeNow.getMinutes();
-
-    //Check to see if compressLogFile needs to be run automatically.
-    var cmpTime = config.cmpExecuteTime.split(":");
-    var cmpHours = cmpTime[0];
-    var cmpMins = cmpTime[1];
-    
-    
-    //utils.log( 'hoursNow=' + hoursNow + ' cmpHours=' + cmpHours + ' minsNow=' + minsNow + ' cmpMins=' + cmpMins); 
-    if (config.cmpAutoExec ) { 
-        if ( hoursNow == cmpHours ) { 
-            if ( minsNow == cmpMins ) {
-                var lastHours = logCompressTime.getHours();
-                var lastMins = logCompressTime.getMinutes();
-                //utils.log( 'hoursNow=' + hoursNow + ' lastHours=' + lastHours + ' minsNow=' + minsNow + ' lastMins=' + lastMins);
-                if ( minsNow !== lastMins ) {     //Prevent running compressLogFile more than once each day.
-                    //utils.log( timeNow + ' - Autocompressing logfile...' );
-                    compressLogFile( config );
-                    logCompressTime = timeNow;
-                };
-            };
-        };
-    };
-    
-
-    //Check to see if status report needs to be sent via email/SMS.
-    
-
 };
 
 //compressLogFile: compresses or truncates logFile via spawn to process compressLog.js

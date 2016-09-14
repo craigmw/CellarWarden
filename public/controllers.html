@@ -325,21 +325,24 @@
             //On ctrlDelBtnID button click, inactivate this ctrl from selectmenu and mark for delete.
             $( "#ctrlDelBtnID" ).button().click( function(event) {
                 event.preventDefault();
-                $.confirm( 'Are you sure you want to delete controller ' + ctrlIndex + ' ('+ currCtrls[ctrlIndex].cfg.name + ')?', 'Delete Controller', function() {
-                    //Mark this controller as disabled in the selectmenu options.
-                    currCtrls[ctrlIndex].cfg.deleteFlag = true; 
+                if ( ctrlIndex === 0 ) {
+                	$.alert( 'Cannot delete controller 0. Uncheck the Active checkbox to disable.', 'Error' );
+                } else {
+                    $.confirm( 'Are you sure you want to delete controller ' + ctrlIndex + ' ('+ currCtrls[ctrlIndex].cfg.name + ')?', 'Delete Controller', function() {
+                        //Mark this controller as disabled in the selectmenu options.
+                        currCtrls[ctrlIndex].cfg.deleteFlag = true; 
 
-                    //Now mark this option as disabled in the selectmenu.
-                    //  The line below doesn't work, so use plain javascript.
-                    //$("#cfgCurrCtrlID option[value='" + ctrlIndex+ "' ]").remove(); 
-                    document.getElementById("cfgCurrCtrlID").options[ctrlIndex].disabled = true;
-                    //document.getElementById("cfgCurrCtrlID").options[i].text = 'Disabled';
+                        //Now mark this option as disabled in the selectmenu.
+                        //  The line below doesn't work, so use plain javascript.
+                        //$("#cfgCurrCtrlID option[value='" + ctrlIndex+ "' ]").remove(); 
+                        document.getElementById("cfgCurrCtrlID").options[ctrlIndex].disabled = true;
+                        //document.getElementById("cfgCurrCtrlID").options[i].text = 'Disabled';
  
-                    //Set selection on first option and refresh.
-                    $("#cfgCurrCtrlID").prop("selectedIndex", 0 ).selectmenu('refresh');
-                    $("#cfgCurrCtrlID" ).selectmenu( "refresh" );
-
-                });
+                        //Set selection on first option and refresh.
+                        $("#cfgCurrCtrlID").prop("selectedIndex", 0 ).selectmenu('refresh');
+                        $("#cfgCurrCtrlID" ).selectmenu( "refresh" );
+                    });
+                };    
             });
 
             //On ctrlLogFileResetID, send socket to reset (delete) the logfile.

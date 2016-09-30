@@ -30,6 +30,8 @@ var gpio = require('rpi-gpio');
 var nodemailer = require('nodemailer');
 var justify = require('justify');
 var CronJob = require('cron').CronJob;
+//var cron = require( 'node-cron' );
+
 
 //Settings - defaults: store these in config.json; note: all pins refer to GPIO numbers
 
@@ -225,6 +227,7 @@ var sampleRate = 2000;        //Number milliseconds between sensor reads
 var gpioInput1 = false;
 var gpioInput2 = false;
 var newCtrl = new ctrl.init();
+var job0 = null;              //Cron job handle.  
 //gpio.setup( config.doorSwitchPin, gpio.DIR_IN,gpioReadInput( config.doorSwitchPin ) );
 //gpio.setup( config.doorSwitchPin2, gpio.DIR_IN,  );
 //gpio.setMode( gpio.MODE_BCM);
@@ -1521,15 +1524,22 @@ function resetHardware() {
 //resetCronJobs: Sets up or resets cron to run jobs at specified times.
 function resetCronJobs() {
 
-	//Set up cronjob to compress logfile
-	var cmpTime = config.cmpExecuteTime.split(":");
-    var cmpHours = cmpTime[0];
-    var cmpMins = cmpTime[1];
-    var cronString = '00 ' + cmpMins + ' ' + cmpHours + ' * * *';
-	utils.log( 'Setting up cronjob to compress logfile at ' + config.cmpExecuteTime + '...');    
-    var job0 = new CronJob( cronString, function() {
-        compressLogFile ( config );
-    }, null, true, null );
+    //Kill cron job if it already exists. Prevents recursive cron jobs.
+    if ( job0 !== null ) {
+        job0.stop();
+    };
+
+	//Set up cronjob to compress logfile (if cmpAutoExec true )
+    if ( config.cmpAutoExec ) {
+	    var cmpTime = config.cmpExecuteTime.split(":");
+        var cmpHours = cmpTime[0];
+        var cmpMins = cmpTime[1];
+        var cronString = cmpMins + ' ' + cmpHours + ' * * *';
+	    utils.log( 'Setting up cronjob to compress logfile at ' + config.cmpExecuteTime + '. cron ' + cronString );    
+        job0 = new CronJob( cronString, function() {
+            compressLogFile ( config );
+        }, null, true, null );
+    };
 
     //Set up cronjob to send a status report.
 

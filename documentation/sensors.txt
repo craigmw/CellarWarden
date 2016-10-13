@@ -1,0 +1,42 @@
+//Sensors.txt - Describes sensor objects for CellarWarden.
+
+Idea is to make sensors objects in an array. When polling for sensor data, increment through sensor array to obtain all sensor data. To store data to main logfile, provide upto 20 fields to store to. sensors.js will call external sensor "device drivers" to access individual sensor values. Device drivers would look like: sensor_dht.js, sensor_gpio.js, sensor_ds18b20.js, sensor_brewometer.js, sensor_sensorTag.js, etc. Each sensor will also have an associated html file (and external .js file) to access as a dialog for configuring, as well as a panel html and js files to display on Panel tab.
+
+sensorList: Array of sensor objects.
+sensorObj: Description of each sensor, including available parameters, reported parameter units, conversion formula and units, calibration parameters.
+
+sensorAccess: Description of how to access the sensor (e.g. i2c, bluetooth, gpio, etc). Stores parameters necessary to access sensor.
+
+SensorParam: Description of one sensor parameter, including units, conversion, converted units, labels, etc.
+
+Structure of sensorList:
+
+var sensorList: [
+    sensorObj: {
+	    sensorHandle: setInterval handle
+	    sensorType: sensor type (DS18B20, DHT11/22/AM2302, GPIO pin, Brewometer, SensorTag, generic analog input, etc)
+	    sensorName: Text to describe sensor
+	    sensorShortName: Text to display describing sensor on LCD display
+	    sensorAccess: {
+	        param1...
+	    }
+	    sensorParam: [
+	        {... }
+	    ]
+	}    
+}
+
+Note that each sensor type has a unique object associated with it. This object is generated in each driver file. Access can also be by polling or event driven. In case of event driven sensor, change in state leads to a program update (e.g. opening door switch activates backlight pin, etc).
+
+
+sensorParam: {
+	paramName: name of sensor parameter
+	paramShortName: short name of parameter to display
+	paramReportUnits: units reported by sensor
+	paramConvertFormula: formula to convert to new units
+	paramUnits: converted units
+	paramUnitsShort: converted units shortened for lcd display
+	paramOffset: calibration offset to add to converted value
+	paramStart: start byte to extract from sensor string (e.g. bluetooth)
+	paramEnd: end byte to extract from sensor string 
+}

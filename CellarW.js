@@ -75,8 +75,8 @@ var alarms = alm.alm( dirName, alarmsFile, alarmsLogFile );
 
 //******Global variables******
 var sampleRate = 2000;        //Number milliseconds between sensor reads
-var gpioInput1 = false;
-var gpioInput2 = false;
+//var gpioInput1 = false;
+//var gpioInput2 = false;
 var newCtrl = new ctrl.init();
 var job0 = null;              //Cron job handle.  
 var count = 0;
@@ -723,6 +723,7 @@ function updateControllers( ctrlAction ) {
 
 //--------------------------Local Utilities--------------------------------
 
+/*
 // gpioReadInput: reads from GPIO pin using pin and optional label
 function gpioReadInput( pin, label ) {
     var retValue = -1; //-1 is error, 0 is low and 1 is high
@@ -753,6 +754,7 @@ function gpioReadInput( pin, label ) {
     //utils.log( 'retValue: ' + retValue );
     //return retValue;
 };
+*/
 
 //compressLogFile: compresses or truncates logFile via spawn to process compressLog.js
 function compressLogFile ( cfgTemp ) {

@@ -7,6 +7,10 @@ var OWsensor = require('ds18x20');
 var gpio = require('rpi-gpio');
 var justify = require('justify');
 
+//local variables
+var gpioInput1 = false;
+var gpioInput2 = false;
+
 exports.sensorData = {            //sensorData object; used to retrieve, print and log sensor data
     time1: 0,
     temp1: NaN,                //First DHT
@@ -281,4 +285,35 @@ function getSum( newValue, sumValue ) {
         retVal += parseFloat(newValue);
     };
     return retVal;
+};
+
+// gpioReadInput: reads from GPIO pin using pin and optional label
+function gpioReadInput( pin, label ) {
+    var retValue = -1; //-1 is error, 0 is low and 1 is high
+    
+    gpio.read( pin, function(err, value) {
+        if (err) {
+            utils.log( label + '-Cannot read from GPIO pin ' + pin + '. ' + err );
+            if (label == 'Door1' ) {
+                gpioInput1 = -1;
+            };
+            if (label == 'Door2' ) {
+                gpioInput2 = -1;
+            };
+            return ( -1 );
+        } else {
+            retValue = value ? 1 : 0;
+            if (label == 'Door1' ) {
+                gpioInput1 = retValue;
+            };
+            if (label == 'Door2' ) {
+                gpioInput2 = retValue;
+            };
+            //utils.log('Connected ' + label + ' to GPIO pin ' + pin + '. Value: ' + value + ' | retValue: ' + retValue + '  Error: ' + err );
+            //return retValue;
+        };
+    });
+
+    //utils.log( 'retValue: ' + retValue );
+    //return retValue;
 };

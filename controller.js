@@ -565,6 +565,8 @@ Ctrl.prototype.resetCtrl = function( ctrls, i ) {
 //  ctrls = array of controller objects
 //  i = index of current controller
 //  returns calculated input from sensor(s)
+//  Note: if two sensors are used, will check to see if either is invalid (NaN) and then return the non-NaN value.
+//    This provides a redundancy in case one sensor goes bad during operation.
 Ctrl.prototype.calculateInput = function( sData, ctrls, i ) {
     
     var retVal = NaN;
@@ -579,8 +581,17 @@ Ctrl.prototype.calculateInput = function( sData, ctrls, i ) {
     var input2 = NaN;
     if ( ctrls[i].cfg.sensor2 !== '' ) { 
         input2 = getSensorInput( sData, ctrls[i].cfg.sensor2 );
+
+        //Check to see if input1 is NaN. If so, return input2 if it is not NaN.
+        if ( isNaN( input1 ) == true ) {
+        	if ( isNaN( input2) == false ) {
+        		retVal = input2;
+        		return retVal;
+        	};
+        };
     };
-    
+
+
     if ( ( isNaN( input2 ) == false ) && ( ctrls[i].cfg.sensor2Priority > 0 ) ) {
         retVal = input1 * ( ( 100 - ctrls[i].cfg.sensor2Priority ) / 100 ) + input2 * ( ctrls[i].cfg.sensor2Priority / 100 );   
     } else {

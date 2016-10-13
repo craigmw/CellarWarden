@@ -4,6 +4,7 @@
 //Inspiration from https://github.com/evgkib/RaspberryPi-temp, brewpi.com, etc.
 
 var cwVersion = "1.0.1";  //CellarWarden version.
+var cwDEBUG = false;      //Debugging mode? If true, suppresses error catching and allows crash.
 
 //Dependencies
 var utils = require('./utils.js');
@@ -13,6 +14,10 @@ var act = require('./actuators.js');
 var tmp = require('./templates.js');
 var display1 = require('./display.js');
 var shutdown = require( './shutdown.js' );
+var sensors = require( './sensors.js' );
+var cfg = require( './config.js' );
+var alm = require( './alarms.js' );
+var log = require( './logging.js' );
 
 //node_modules
 var path = require('path');
@@ -30,7 +35,7 @@ var gpio = require('rpi-gpio');
 var nodemailer = require('nodemailer');
 var justify = require('justify');
 var CronJob = require('cron').CronJob;
-//var cron = require( 'node-cron' );
+
 
 
 //Settings - defaults: store these in config.json; note: all pins refer to GPIO numbers
@@ -47,180 +52,26 @@ var serverLogFile = dirName + '/server.log';               //Name of server log
 
 //utils.log( 'Path: ' + JSON.stringify( path.dirname)  );
 
-var config = {
-    pwProtect: false,                       //Protect using password?
-    passWord: "cellar",                     //Password, cellar as default
-    configTitle: "My wine cellar",
-    configFile: dirName + '/public/config.json',
-    logFileName: 'logfile.csv', 
-    showTooltips: true,                     //Show or hide tooltips  
-    logIncrement: 30,                       //Sensor reads to wait before logging data
-    logAveraging: false,	            //If true, logfile.csv data is average of reads over logIncrement reads
-    rejectExtremes: false,                  //Reject extreme values that vary greater than 
-    rejectThreshold: 50,                    //Reject threshold (percent)
-    DHTtype1: 22,                           //DHT sensor 1 info; if 0, skip read
-    DHTpin1: 5,
-    DHTlabel1: 'Cellar',
-    DHTshow1: true,                         
-    DHToffsetT1: 0,
-    DHToffsetH1: 0,
-    DHTtype2: 0,                            //DHT sensor 2 info, if 0, skip read
-    DHTpin2: 6,
-    DHTlabel2: 'Outside',
-    DHTshow2: true,
-    DHToffsetT2: 0,
-    DHToffsetH2: 0,
-    oneWirePin: 4,                          //One Wire network on pin 4 (can this be changed?)
-    oneWireDevices: '',                     //String of all One Wire devices to display in config dialog
-    DS18id1: '',                            //DS18B20 sensor 1 info, if '', skip read
-    DS18label1: 'Bottle1',
-    DS18show1: true,
-    DS18offset1: 0,
-    DS18id2: '',                            //DS18B20 sensor 2 info, if '', skip read
-    DS18label2: 'Bottle2',
-    DS18show2: true,
-    DS18offset2: 0,
-    DS18id3: '',                            //DS18B20 sensor 3 info, if '', skip read
-    DS18label3: '',
-    DS18show3: true,
-    DS18offset3: 0,
-    DS18id4: '',                            //DS18B20 sensor 4 info, if '', skip read
-    DS18label4: '',
-    DS18show4: true,
-    DS18offset4: 0,
-    DS18id5: '',                            //DS18B20 sensor 5 info, if '', skip read
-    DS18label5: '',
-    DS18show5: true,
-    DS18offset5: 0,
-    DS18id6: '',                            //DS18B20 sensor 6 info, if '', skip read
-    DS18label6: '',
-    DS18show6: true,
-    DS18offset6: 0,
-    DS18id7: '',                            //DS18B20 sensor 7 info, if '', skip read
-    DS18label7: '',
-    DS18show7: true,
-    DS18offset7: 0,
-    DS18id8: '',                            //DS18B20 sensor 8 info, if '', skip read
-    DS18label8: '',
-    DS18show8: true,
-    DS18offset8: 0,
-    tempScale: 'F',                         //C or F?
-    lcdExists: false,                       //LCD panel info: does it exist?
-    lcdType: 0,                             //LCD type, 0=standard (parallel) or 1=I2C?
-    lcdBlPin: null,                         //LCD backlight pin
-    lcdBlSwitched: false,                   //LCD backlight pin switched by door switch?
-    lcdBlDelay: 0,                          //Delay in seconds to keep backlight on after activated.
-    lcdRsPin: 27,                           //Standard (parallel) LCD params: RsPin
-    lcdEPin: 22,                            //  E Pin
-    lcdDataPin0: 25,                        //  Data pin 0
-    lcdDataPin1: 24,                        //  Data pin 1
-    lcdDataPin2: 23,                        //  Data pin 2
-    lcdDataPin3: 18,                        //  Data pin 3
-    lcdI2cBus: 1,                           //LCD I2C bus (1 for rev 2+ boards, 0 for rev 1 boards)    
-    lcdI2cAddress: 27,                      //LCD I2C device address in hex (saved as decimal but converted to hex in display.js). 
-    lcdCols: 20,
-    lcdRows: 4, 
-    doorSwitchExists: false,                // True if door switch exits
-    doorSwitchPin: 19,                      // GPIO pin for door switch
-    doorSwitchExists2: false,               //True if door switch #2 exits
-    doorSwitchPin2: 99,                     //GPIO for door switch #2
-    doorClosed: 10,                         //Door closed value
-    doorOpen: 40,                           //Door open value
-    compress: false,                        // Compress logfile?
-    cmpPreserve: 4,                         // Days to preserve data, older than this compressed
-    cmpGranularity: 60,                     // Compression granularity, e.g. keep 1 record for every 60 minutes of data
-    cmpAutoExec: false,                     // Automatically compress logfile?
-    cmpExecuteTime: '1:00',                 // Time of day to automatically compress data
-    listenAddress: '127.0.0.1',             //IP address to set up server sockets
-    listenPort: 8888                        //Port to host index.html on
-};
+//Initialize config object.
+var config = cfg.config( dirName );
 
-//Alarm variables
-//  Alarms based on temp (can pick between temp1/2, OW1/2), door (open or closed), or power (amps low or high)
+//Initialize sensorData object.
+var sensorData = sensors.sensorData;
+
+// reject variables, used only if config.rejectExtremes is true.
+var rejectData = (JSON.parse(JSON.stringify(sensorData)));
+
+//logData object: copy of sensorData used to send to logfile.csv
+var logData = (JSON.parse(JSON.stringify( sensorData)));
+
+// averaging variables, used only if config.logAveraging true.
+var sumData = (JSON.parse(JSON.stringify( sensorData)));
+var sumCount = 0;
+
+//Initialize alarms object.
 var alarmsFile = dirName + '/public/alarms.json';
 var alarmsLogFile = dirName + '/public/alarmsLog.csv';
-var alarms = {
-    alarmsOn: false,            //If true, monitor alarm conditions.
-    alarmSocket: '',            //If not blank, update client with new alarm info/action via sockets.
-    alarmString: '',            //*If an alarm is triggered, display this on notification dialog and in email/SMS.
-    alarmLcdString: '',         // Display this on LCD, shorter version of notification.
-    alarmSeries: 0,             // Key for series triggering alarm. 0=temp1, 1=humd1, 2=temp2, 3=humd2, 4=OW1, 5=OW2, 6=amps, 7=door1, 8=door2
-    tempSensor1: 'temp1',       //* Condition 1 - temp1
-    tempMon1: true,             //* Monitor this parameter
-    tempNotify1: true,          //* Send emails if alarm triggered
-    tempMax1: 100,              //* Max temp threshold for cond1
-    tempMin1: 0,                //* Min temp threshold for cond1
-    tempTime1: 0,               // Unix timestamp when condition first triggered
-    tempDur1: 60,               // Duration of condition before triggering alarm in minutes
-    tempDurCount1: 0,           // Minutes elapsed since condition triggered
-    tempString1: 'Temp1',       //* String to notify by email or sms 
-    tempPost1: '',              //* String to send post event through web to induce action (e.g. Insteon)
-    tempSensor2: 'temp2',       // Condition 2 - temp2
-    tempMon2: false,
-    tempNotify2: true,
-    tempMax2: 100,              
-    tempMin2: 0,
-    tempTime2: 0,                
-    tempDur2: 60, 
-    tempDurCount2: 0,           
-    tempString2: 'Temp2', 
-    tempPost2: '',   
-    humiSensor1: 'dht1',       // Condition 3 - humidity 1
-    humiMon1: false,
-    humiNotify1: false,
-    humiMax1: 100,              
-    humiMin1: 0, 
-    humiTime1: 0,               
-    humiDur1: 60,               
-    humiDurCount1: 0,           
-    humiString1: 'Humd1', 
-    humiPost1: '', 
-    humiSensor2: 'dht2',       // Condition 4 - humidity 2
-    humiMon2: false,
-    humiNotify2: false,
-    humiMax2: 100,              
-    humiMin2: 0, 
-    humiTime2: 0,               
-    humiDur2: 60,               
-    humiDurCount2: 0,           
-    humiString2: 'Humd2', 
-    humiPost2: '', 
-    doorSensor1: 'door1',       // Condition 5 - door open
-    doorMon1: false,
-    doorNotify1: false,
-    doorState1: 'closed',                  
-    doorTime1: 0,               
-    doorDur1: 60,               
-    doorDurCount1: 0,           
-    doorString1: 'Door1', 
-    doorPost1: '',
-    doorSensor2: 'door2',       // Condition 6 - door open
-    doorMon2: false,
-    doorNotify2: false,
-    doorState2: 'closed',                  
-    doorTime2: 0,               
-    doorDur2: 60,               
-    doorDurCount2: 60,           
-    doorString2: 'Door2', 
-    doorPost2: '',  
-    powerSensor1: 'power1',     // Condition 7 - power
-    powerMon1: false,
-    powerNotify: false,
-    powerMax1: 0,
-    powerMin1: 0,
-    powerTime1: 0,
-    powerDur1: 0,
-    powerDurCount1: 0,
-    powerString1: 'Power1 alarm',
-    powerPost1:'', 
-    mailService: '',            // Email sender service (e.g. Gmail, etc)
-    mailUser: '',               // Email sender username
-    mailPass: '',               // Email sender password             
-    emailAddr1: '',             // Email address 1 to send notifications
-    emailAddr2: '',             // Email address 2 to send notifications
-    autoclear: true,            // Automatically clear alarms if condition returns to normal
-    suppress: true              // Suppress multiple emails. Clears alarm condition when notificatio sent.          
-}
+var alarms = alm.alm( dirName, alarmsFile, alarmsLogFile );
 
 //******Global variables******
 var sampleRate = 2000;        //Number milliseconds between sensor reads
@@ -228,9 +79,6 @@ var gpioInput1 = false;
 var gpioInput2 = false;
 var newCtrl = new ctrl.init();
 var job0 = null;              //Cron job handle.  
-//gpio.setup( config.doorSwitchPin, gpio.DIR_IN,gpioReadInput( config.doorSwitchPin ) );
-//gpio.setup( config.doorSwitchPin2, gpio.DIR_IN,  );
-//gpio.setMode( gpio.MODE_BCM);
 var count = 0;
 var currentTime = 0;          //Current time determined on each run through main loop.
 var logCompressTime = new Date();      //Last time logCompress run; 
@@ -242,24 +90,6 @@ var writeToLog = true;        //Flag to prevent writing logfile while modules ar
 var logFileWritten = false;   //Flag set to true after log file written. Sends Sockets to client.
 var showCompressBox = false;  //Flag to send socket to client when logfile compression occurs
 var closeCompressBox = false; //Flag to send socket to client when logfile compression is done
-var sensorData = {            //sensorData object; used to retrieve, print and log sensor data
-    time1: 0,
-    temp1: NaN,                //First DHT
-    humi1: NaN, 
-    temp2: NaN,                //Second DHT
-    humi2: NaN,
-    onew1: NaN,                //DS18B20 #1
-    onew2: NaN,                //DS18B20 #2
-    onew3: NaN,                //DS18B20 #3
-    onew4: NaN,                //DS18B20 #4
-    onew5: NaN,                //DS18B20 #5
-    onew6: NaN,                //DS18B20 #6
-    onew7: NaN,                //DS18B20 #7
-    onew8: NaN,                //DS18B20 #8
-    amps1: NaN,                //Current loop sensor
-    door1: NaN,                //Door1
-    door2: NaN                 //Door2 
-};
 
 //Setup delay to temporarily show IP address on LCD when program starts.
 var showIP = true;
@@ -268,17 +98,7 @@ setTimeout( function() {
     showIP = false;
 }, showIPdelay );
 
-//logData object: copy of sensorData used to send to logfile.csv
-//var logData = sensorData; //This won't work, only passes a reference. Need duplicate.
-var logData = (JSON.parse(JSON.stringify( sensorData)));
 
-// averaging variables, used only if config.logAveraging true.
-var sumData = (JSON.parse(JSON.stringify( sensorData)));
-var sumCount = 0;
-
-
-// reject variables, used only if config.rejectExtremes is true.
-var rejectData = (JSON.parse(JSON.stringify(sensorData)));
 
 
 //lcdData object; used to print data and messages to LCD screen
@@ -309,7 +129,7 @@ ctrlsSend = 20;
 updateConfig( 'init' );
 
 //Load alarms from alarms.json
-updateAlarms( 'init', config );
+alarms = alm.updateAlarms( alarms, 'init', config );
 
 //Load controllers from controllers.json
 updateControllers( 'init', ctrls );
@@ -328,19 +148,13 @@ setInterval(function(){
     currTime = new Date();
 
     //Load sensor data into JSON object sensorData
-    getSensorData(sensorData, config.tempScale);
+    sensors.getSensorData( sensorData, config );
 
     //Reject extreme values if they exceed threshold
     if ( config.rejectExtremes ) {
-        sensorData = rejectExtremes( sensorData, config.rejectThreshold );
+        sensorData = sensors.rejectExtremes( sensorData, config, rejectData );
     };
-
-    //Sum data if logAveraging true
-    if (config.logAveraging ) {
-        sumData = sumAllData( sensorData, sumData );
-        sumCount += 1;
-    };
-    
+   
     //Process sensorData for display on LCD screen and client
     lcdData = display1.processSensorData( sensorData, config, alarms, ctrls, showIP, localIp );
 
@@ -349,8 +163,17 @@ setInterval(function(){
         display1.lcdUpdateScreen( lcdData, config, alarms, 0);
     }; 
 
+    //Sum data if logAveraging true
+    if (config.logAveraging ) {
+        sumData = log.sumAllData( sensorData, sumData, sumCount );
+        sumCount += 1;
+    };
+
     //Send sensorData to logfile after logIncrement reads has elapsed; also check for alarm conditions.
-    logLast = writeToLogfile( config.logFileName, sensorData, logData, config.logIncrement, logLast );
+    var retVal = log.writeToLogfile( sensorData, logData, sumData, sumCount, logLast, alarms, config, writeToLog, logFileDirectory, logFileWritten, alarmsLogFile );
+    logLast = retVal.logLast;
+    logFileWritten = retVal.logFileWritten;
+
 
     //Process controllers (if on).
     if( ctrlsConfigUpdate == true ) {    //If ctrls has been edited by client, skip processing and copy new version of ctrls.
@@ -380,355 +203,6 @@ setInterval(function(){
 
 }, sampleRate );
 //********************************* END OF MAIN ******************************************
- 
-
-//Get sensor data and pack into sensorData JSON object
-function getSensorData(data, tempScale1) {
-    
-    //Read DHT sensor(s)
-    if (config.DHTtype1 === 11 || config.DHTtype1 === 22) {
-        var readout = sensorLib.readSpec( config.DHTtype1, config.DHTpin1);
-        if (tempScale1 == 'F') {
-            readout.temperature = readout.temperature * 9/5 +32;
-        };
-        data.temp1 = readout.temperature + config.DHToffsetT1;
-        data.humi1 = readout.humidity + config.DHToffsetH1;
-    } else {
-        data.temp1 = NaN;
-        data.humi1 = NaN; 
-    };
-    if (config.DHTtype2 === 11 || config.DHTtype2 === 22) {
-        var readout = sensorLib.read( config.DHTtype2, config.DHTpin2);
-        if (tempScale1 == 'F') {
-            readout.temperature = readout.temperature * 9/5 +32;
-        };
-        data.temp2 = readout.temperature + config.DHToffsetT2;
-        data.humi2 = readout.humidity + config.DHToffsetH2;
-    } else {
-        data.temp2 = NaN;
-        data.humi2 = NaN; 
-    };
- 
-    //Read OneWire sensor(s), all 8 of them!
-    if (config.DS18id1 != 'None') {
-        OWsensor.get(config.DS18id1, function(err, OWtemp) {
-            if (tempScale1 == 'F') {
-                data.onew1 = (OWtemp * 9/5 +32) + config.DS18offset1;
-            } else { 
-                data.onew1 = OWtemp + config.DS18offset1;
-            };
-        });
-    } else {
-        data.onew1 = NaN;
-    };            
-    if (config.DS18id2 != 'None') {
-        OWsensor.get(config.DS18id2, function(err, OWtemp) {
-            if (tempScale1 == 'F') {
-                data.onew2 = ( OWtemp * 9/5 +32) + config.DS18offset2;
-            } else { 
-                data.onew2 = OWtemp + config.DS18offset2;
-            };
-        });
-    } else {
-        data.onew2 = NaN;
-    };
-    if (config.DS18id3 != 'None') {
-        OWsensor.get(config.DS18id3, function(err, OWtemp) {
-            if (tempScale1 == 'F') {
-                data.onew3 = ( OWtemp * 9/5 +32) + config.DS18offset3;
-            } else { 
-                data.onew3 = OWtemp + config.DS18offset3;
-            };
-        });
-    } else {
-        data.onew3 = NaN;
-    };
-    if (config.DS18id4 != 'None') {
-        OWsensor.get(config.DS18id4, function(err, OWtemp) {
-            if (tempScale1 == 'F') {
-                data.onew4 = ( OWtemp * 9/5 +32) + config.DS18offset4;
-            } else { 
-                data.onew4 = OWtemp + config.DS18offset4;
-            };
-        });
-    } else {
-        data.onew4 = NaN;
-    };
-    if (config.DS18id5 != 'None') {
-        OWsensor.get(config.DS18id5, function(err, OWtemp) {
-            if (tempScale1 == 'F') {
-                data.onew5 = ( OWtemp * 9/5 +32) + config.DS18offset5;
-            } else { 
-                data.onew5 = OWtemp + config.DS18offset5;
-            };
-        });
-    } else {
-        data.onew5 = NaN;
-    }; 
-    if (config.DS18id6 != 'None') {
-        OWsensor.get(config.DS18id6, function(err, OWtemp) {
-            if (tempScale1 == 'F') {
-                data.onew6 = ( OWtemp * 9/5 +32) + config.DS18offset6;
-            } else { 
-                data.onew6 = OWtemp + config.DS18offset6;
-            };
-        });
-    } else {
-        data.onew6 = NaN;
-    };
-    if (config.DS18id7 != 'None') {
-        OWsensor.get(config.DS18id7, function(err, OWtemp) {
-            if (tempScale1 == 'F') {
-                data.onew7 = ( OWtemp * 9/5 +32) + config.DS18offset7;
-            } else { 
-                data.onew7 = OWtemp + config.DS18offset7;
-            };
-        });
-    } else {
-        data.onew7 = NaN;
-    };    
-    if (config.DS18id8 != 'None') {
-        OWsensor.get(config.DS18id8, function(err, OWtemp) {
-            if (tempScale1 == 'F') {
-                data.onew8 = ( OWtemp * 9/5 +32) + config.DS18offset8;
-            } else { 
-                data.onew8 = OWtemp + config.DS18offset8;
-            };
-        });
-    } else {
-        data.onew8 = NaN;
-    };
-    
-    //Get power reading; fill with NaN until implemented
-    data.amps = NaN;
-
-    //Get door reading; 
-    // Door switch is normally closed when door shut. So, in closed
-    //    state, gpio pin will be high. Mark as open if pin is low.
-    if ( config.doorSwitchExists ) {
-        gpioReadInput( config.doorSwitchPin, 'Door1');
-        if ( gpioInput1 == -1 ) {
-            //data.door1 = config.doorClosed;
-            data.door1 = NaN;
-            //config.doorSwitchExists = false;
-        } else {
-            data.door1 = gpioInput1 ? NaN : config.doorOpen;
-        };
-        
-    } else {
-        data.door1 = NaN;
-    };
-    //utils.log( 'Door1 read value: ' + gpioInput1 + ' - data.door1: ' + data.door1 );
-    
-    //Get door2 reading
-    if ( config.doorSwitchExists2 ) {
-        gpioReadInput( config.doorSwitchPin2, 'Door2');
-        if ( gpioInput2 == -1 ) {
-            //data.door2 = config.doorClosed;
-            data.door2 = NaN;
-            //config.doorSwitchExists2 = false;
-        } else {
-            data.door2 = gpioInput2 ? NaN : config.doorOpen;
-        };
-    } else {
-        data.door2 = NaN;
-    };
-    //utils.log( 'Door2 read value: ' + gpioInput2 + ' - data.door2: ' + data.door2 );
-    
-    //Get timestamp
-    //var date1 = new Date();
-    data.time1 = utils.getDateTime();
-    return(data);	       
-};
-
-function rejectExtremes( data, thresh ) {
-    //Only process if rejectData.time1 != 0 so we only work with real data
-    if (rejectData.time1 !== 0 ) {
-        data.temp1 = detectExtremes( data.temp1, rejectData.temp1, thresh, "temp1" );
-        data.humi1 = detectExtremes( data.humi1, rejectData.humi1, thresh, "humi1" );
-        data.temp2 = detectExtremes( data.temp2, rejectData.temp2, thresh, "temp2" );
-        data.humi2 = detectExtremes( data.humi2, rejectData.humi2, thresh, "humi2" );
-        data.onew1 = detectExtremes( data.onew1, rejectData.onew1, thresh, "onew1" );
-        data.onew2 = detectExtremes( data.onew2, rejectData.onew2, thresh, "onew2" );
-        data.onew3 = detectExtremes( data.onew3, rejectData.onew3, thresh, "onew3" );
-        data.onew4 = detectExtremes( data.onew4, rejectData.onew4, thresh, "onew4" );
-        data.onew5 = detectExtremes( data.onew5, rejectData.onew5, thresh, "onew5" );
-        data.onew6 = detectExtremes( data.onew6, rejectData.onew6, thresh, "onew6" );
-        data.onew7 = detectExtremes( data.onew7, rejectData.onew7, thresh, "onew7" );
-        data.onew8 = detectExtremes( data.onew8, rejectData.onew8, thresh, "onew8" );
-        data.amps = detectExtremes( data.amps, rejectData.amps, thresh, "amps" );
-    } else {
-        rejectData.temp1 = data.temp1;
-        rejectData.humi1 = data.humi1;
-        rejectData.temp2 = data.temp2;
-        rejectData.humi2 = data.humi2;
-        rejectData.onew1 = data.onew1;
-        rejectData.onew2 = data.onew2;
-        rejectData.onew3 = data.onew3;
-        rejectData.onew4 = data.onew4;
-        rejectData.onew5 = data.onew5;
-        rejectData.onew6 = data.onew6;
-        rejectData.onew7 = data.onew7;
-        rejectData.onew8 = data.onew8;
-    };
-    rejectData.time1 = data.time1;
-    return data;
-};
-
-function detectExtremes( newData, oldData, thresh, varName ) {
-	//if ( isNaN( oldData ) ) return NaN;
-    if ( Math.abs( newData - oldData ) > thresh ) {
-        utils.log( utils.getDateTime() + " - Rejected " + varName + " newData: " + newData + " oldData: " + oldData + " threshold: " + thresh ); 
-        newData = NaN; //oldData;
-    } else {
-        oldData = newData;
-    };
-    return newData;
-};
-
-function sumAllData( data, aData ) {
-    aData.time1 = data.time1;
-    
-    
-    if (sumCount === 0) {
-        //If first time through summing, just load current values into aData. 
-        aData.temp1 = data.temp1;
-        aData.humi1 = data.humi1;
-        aData.temp2 = data.temp2;
-        aData.humi2 = data.humi2;
-        aData.onew1 = data.onew1;
-        aData.onew2 = data.onew2;
-        aData.onew3 = data.onew3;
-        aData.onew4 = data.onew4;
-        aData.onew5 = data.onew5;
-        aData.onew6 = data.onew6;
-        aData.onew7 = data.onew7;
-        aData.onew8 = data.onew8;
-        aData.amps = data.amps;
-    } else {
-        //If not first time, sum each value unless it is an NaN (ignore NaNs)
-        aData.temp1 = getSum( data.temp1, aData.temp1 );
-        aData.humi1 = getSum( data.humi1, aData.humi1 );
-        aData.temp2 = getSum( data.temp2, aData.temp2 );
-        aData.humi2 = getSum( data.humi2, aData.humi2 );
-        aData.onew1 = getSum( data.onew1, aData.onew1 );
-        aData.onew2 = getSum( data.onew2, aData.onew2 );
-        aData.onew3 = getSum( data.onew3, aData.onew3 );
-        aData.onew4 = getSum( data.onew4, aData.onew4 );
-        aData.onew5 = getSum( data.onew5, aData.onew5 );
-        aData.onew6 = getSum( data.onew6, aData.onew6 );
-        aData.onew7 = getSum( data.onew7, aData.onew7 );
-        aData.onew8 = getSum( data.onew8, aData.onew8 );
-        aData.amps = getSum( data.amps, aData.amps );
-    };
-
-    //utils.log( aData.time1 + ": data.temp1: " + data.temp1 + " aData.temp1: " + aData.temp1 + " sumCount: " + sumCount );
-    return aData;
-};
-
-function getSum( newValue, sumValue ) {
-    var retVal = parseFloat(sumValue);
-
-    //Don't add NaNs to sum
-    if ( isNaN( newValue ) ) {
-        retVal = NaN;
-    } else {
-        retVal += parseFloat(newValue);
-    };
-    return retVal;
-};
-
-//Log data to file once per logIncrement (minutes since last log); returns updated loglast
-function writeToLogfile( logFileName1, sensorData1, logData1, logIncrement1, logLast1 ) {
-    
-    //Determine if enough time has passed to log these data to file
-    logLast1 = logLast1 + 1;  //Increment the number of calls to this function
-    if (logLast1 >= logIncrement1) {
-        //Time to execute the write
-        logLast1 = 0;
-        
-        //Average the data if logAverage is true and place into last sensorData object
-        if (config.logAveraging ) {
-            //Use existing time stamp
-            sensorData1.temp1 = avgVals( sumData.temp1, sumCount);
-            sensorData1.humi1 = avgVals( sumData.humi1, sumCount);
-            sensorData1.temp2 = avgVals( sumData.temp2, sumCount);
-            sensorData1.humi2 = avgVals( sumData.humi2, sumCount);
-            sensorData1.onew1 = avgVals( sumData.onew1, sumCount);
-            sensorData1.onew2 = avgVals( sumData.onew2, sumCount);
-            sensorData1.onew3 = avgVals( sumData.onew3, sumCount);
-            sensorData1.onew4 = avgVals( sumData.onew4, sumCount);
-            sensorData1.onew5 = avgVals( sumData.onew5, sumCount);
-            sensorData1.onew6 = avgVals( sumData.onew6, sumCount);
-            sensorData1.onew7 = avgVals( sumData.onew7, sumCount);
-            sensorData1.onew8 = avgVals( sumData.onew8, sumCount);
-            //Add the rest of the one wire sensors here...
-            sensorData1.amps = avgVals( sumData.amps, sumCount);
-            //don't change sensorData.door1
-            sumCount = 0;
-        };
-               
-        //Check for alarm conditions and send notification(s) if true.
-        //utils.log( 'alarmsOn: ' + alarms.alarmsOn + '  tempTime1: ' + alarms.tempTime1 );
-        if (alarms.alarmsOn ) {
-           if( checkAlarms( alarms, sensorData1 ) ) {
-               //Write record to alarmslog.csv
-               var alarmsLogRecord = sensorData1.time1 + ',' + alarms.alarmSeries + ',' + alarms.alarmString + '\n';
-               fs.appendFile( alarmsLogFile, alarmsLogRecord, function(err) {
-                   if (err) {
-                       utils.log('File ' + alarmsLogFile + ' cannot be written to: ' + err  );
-                   } else {
-                       utils.log('Wrote to alarmslog.csv.');
-                   };
-               });
-            } else {
-                //Nothing here
-            };
-        };
-        
-        //Format record and write to logfile.csv 
-        var csvrecord = processLogCsvData( sensorData1, logData1 );
-        if( writeToLog ) {                           //Only write to file when writeToLog is true.
-            fs.appendFile( logFileDirectory + logFileName1, csvrecord, function(err) {
-                if (err) {
-                    utils.log('File ' + logFileDirectory + logFileName1 + ' cannot be written to: ' + err );
-                } else {
-                    //utils.log('Wrote to logfile.');
-                };
-            });
-        };
-        //Set this flag to true to send sockets to client.
-        logFileWritten = true;
-    };
-    return ( logLast1 ); 
-};
-
-function avgVals( sumVal, sCount ) {
-    var retVal = sumVal / sCount;
-    //utils.log(" sumVal: " + sumVal + " sCount: " + sCount + " retVal: " + retVal );
-    return retVal;    
-};
-
-//Process logfile data object logData
-function processLogCsvData( data, returndata ) {
-    returndata = data.time1 + ',';
-    returndata += (data.temp1).toFixed(2) + ',';
-    returndata += (data.humi1).toFixed(2) + ',';
-    returndata += (data.temp2).toFixed(2) + ',';
-    returndata += (data.humi2).toFixed(2) + ',';
-    returndata += (data.onew1).toFixed(2) + ',';
-    returndata += (data.onew2).toFixed(2) + ',';
-    returndata += (data.onew3).toFixed(2) + ',';
-    returndata += (data.onew4).toFixed(2) + ',';
-    returndata += (data.onew5).toFixed(2) + ',';
-    returndata += (data.onew6).toFixed(2) + ',';
-    returndata += (data.onew7).toFixed(2) + ',';
-    returndata += (data.onew8).toFixed(2) + ',';
-    returndata += (data.amps1).toFixed(2) + ',';
-    returndata += (data.door1) + ','
-    returndata += (data.door2) + '\n';   
-    return (returndata);
-};
 
 //Set up sockets to communicate with client
 //  Update lcd graphic, update client graph on new data, and check for changes in config.
@@ -909,7 +383,7 @@ io.sockets.on('connection', function( socket ){
     //Receive new alarm configuration from client and write to alarms object. 
     socket.on( 'changeAlarms', function( alarmsPassed ) {
         alarms = JSON.parse( JSON.stringify( alarmsPassed ) );
-        updateAlarms( 'update', config );
+        alarms = alm.updateAlarms( alarms, 'update', config );
         //Let client know config has been updated
         io.sockets.emit( 'initAlarms', alarms );
         utils.log('Alarm configuration changed by client.');
@@ -933,8 +407,8 @@ io.sockets.on('connection', function( socket ){
     socket.on( 'clearAlarms', function( alarmsPassed ) {
         utils.log( 'clearAlarms socket received.' );
         alarms = JSON.parse( JSON.stringify( alarmsPassed ) );
-        almClearAll( alarms );
-        updateAlarms( 'update', config );
+        alarms= alm.almClearAll( alarms );
+        alarms = alm.updateAlarms( alarms, 'update', config );
         io.sockets.emit( 'initAlarms', alarms );
     });
 
@@ -952,7 +426,7 @@ io.sockets.on('connection', function( socket ){
     //Receive clearAlarmLogFile
     socket.on( 'clearAlarmLogFile', function() {
         utils.log('Clearing alarms logfile...');
-        almClearAlarmLogFile();
+        alm.almClearAlarmLogFile( alarmsLogFile );
         io.sockets.emit ( 'resetAnnotations' );
     });
 
@@ -1002,364 +476,6 @@ io.sockets.on('connection', function( socket ){
         });                 
     }); 
 });
-
-//Alarm processing stuff
-// checkAlarms: checks to see if an alarm has triggered. Returns true if alarm condition met.
-function checkAlarms( alarms1, sData ) {
-    var retVal = false;
-    var series = 0;
-
-    //utils.log( "Checking for alarm condition..." );
-    // Check temp1
-    if ( alarms1.tempMon1 ) {
-        var tempAlarm1 = false;        
-        switch( alarms1.tempSensor1 ) {
-            case 'temp1':
-                tempAlarm1 = almCheckTemp( sData.temp1, alarms1.tempMax1, alarms1.tempMin1 );
-                series = 0;
-                break;
-                 
-            case 'temp2':
-                tempAlarm1 = almCheckTemp( sData.temp2, alarms1.tempMax1, alarms1.tempMin1 );
-                series = 2;
-                break;
-
-            case 'onew1':
-                tempAlarm1 = almCheckTemp( sData.onew1, alarms1.tempMax1, alarms1.tempMin1 );
-                series = 4
-                break;
-
-            case 'onew2':
-                tempAlarm1 = almCheckTemp( sData.onew2, alarms1.tempMax1, alarms1.tempMin1 );
-                series = 5;
-                break;
-
-            default:
-                //No sensor defined so just ignore
-        };
-
-        //If alarm condition met, set this and send notification. 
-        if (tempAlarm1 ) {
-            var condString = alarms1.tempString1 + " is out of range!";
-            alarms1.alarmLcdString = 'ALARM! ' + alarms1.tempString1;
-            var triggerRet = almTrigger( alarms1.tempTime1, alarms1.tempDur1, condString, alarms1, series );
-            if( triggerRet.trigger ) {
-                retVal = true;
-            } else {
-                alarms1.tempTime1 = triggerRet.timeStamp; 
-                retVal = false; 
-            };  
-        } else {
-            if( alarms1.autoclear ) {
-                alarms1.tempTime1 = 0;
-            }; 
-            retval = false;
-        };
-    };
-
-    // Check temp2
-    if ( alarms1.tempMon2 ) {
-        var tempAlarm2 = false;        
-        switch( alarms1.tempSensor2 ) {
-            case 'temp1':
-                tempAlarm2 = almCheckTemp( sData.temp1, alarms1.tempMax2, alarms1.tempMin2 );
-                series = 0;
-                break;
-                 
-            case 'temp2':
-                tempAlarm2 = almCheckTemp( sData.temp2, alarms1.tempMax2, alarms1.tempMin2 );
-                series = 2;
-                break;
-
-            case 'onew1':
-                tempAlarm2 = almCheckTemp( sData.onew1, alarms1.tempMax2, alarms1.tempMin2 );
-                series = 4;
-                break;
-
-            case 'onew2':
-                tempAlarm2 = almCheckTemp( sData.onew2, alarms1.tempMax2, alarms1.tempMin2 );
-                series = 5;
-                break;
-
-            default:
-                //No sensor defined so just ignore
-        };
-        //If alarm condition met, set this and send notification. 
-        if (tempAlarm2 ) {
-            var condString = alarms1.tempString2 + " is out of range!";
-            alarms1.alarmLcdString = 'ALARM! ' + alarms1.tempString2;
-            var triggerRet = almTrigger( alarms1.tempTime2, alarms1.tempDur2, condString, alarms1, series );
-            if( triggerRet.trigger ) {
-                retVal = true;
-            } else {
-                alarms1.tempTime2 = triggerRet.timeStamp; 
-                retVal = false; 
-            };  
-        } else {
-            if( alarms1.autoclear ) {
-                alarms1.tempTime2 = 0;
-            }; 
-            retval = false;
-        };
-    };
-
-    // Check humi1
-    if ( alarms1.humiMon1 ) {
-        var humiAlarm1 = false;        
-        switch( alarms1.humiSensor1 ) {
-            case 'dht1':
-                humiAlarm1 = almCheckTemp( sData.humi1, alarms1.humiMax1, alarms1.humiMin1 );
-                series = 1;
-                break;
-                 
-            case 'dht2':
-                humiAlarm1 = almCheckTemp( sData.humi2, alarms1.humiMax1, alarms1.humiMin1 );
-                series = 3;
-                break;
-
-            default:
-                //No sensor defined so just ignore
-        };
-        //If alarm condition met, set this and send notification. 
-        if (humiAlarm1 ) {
-            var condString = alarms1.humiString1 + " is out of range!";
-            alarms1.alarmLcdString = 'ALARM! ' + alarms1.humiString1;
-            var triggerRet = almTrigger( alarms1.humiTime1, alarms1.humiDur1, condString, alarms1, series );
-            if( triggerRet.trigger ) {
-                retVal = true;
-            } else {
-                alarms1.humiTime1 = triggerRet.timeStamp; 
-                retVal = false; 
-            };  
-        } else {
-            if( alarms1.autoclear ) {
-                alarms1.humiTime1 = 0;
-            }; 
-            retval = false;
-        };
-     
-    };
-
-    // Check humi2
-    if ( alarms1.humiMon2 ) {
-        var humiAlarm2 = false;        
-        switch( alarms1.humiSensor2 ) {
-            case 'dht1':
-                humiAlarm2 = almCheckTemp( sData.humi1, alarms1.humiMax2, alarms1.humiMin2 );
-                series = 1;
-                break;
-                 
-            case 'dht2':
-                humiAlarm2 = almCheckTemp( sData.humi2, alarms1.humiMax2, alarms1.humiMin2 );
-                series = 3;
-                break;
-
-            default:
-                //No sensor defined so just ignore
-        };
-        //If alarm condition met, set this and send notification. 
-        if (humiAlarm2 ) {
-            var condString = alarms1.humiString2 + " is out of range!";
-            alarms1.alarmLcdString = 'ALARM! ' + alarms1.humiString2;
-            var triggerRet = almTrigger( alarms1.humiTime2, alarms1.humiDur2, condString, alarms1, series );
-            if( triggerRet.trigger ) {
-                retVal = true;
-            } else {
-                alarms1.humiTime2 = triggerRet.timeStamp; 
-                retVal = false; 
-            };  
-        } else {
-            if( alarms1.autoclear ) {
-                alarms1.humiTime2 = 0;
-            }; 
-            retval = false;
-        };
-    }; 
-
-    // Check door1
-    if ( alarms1.doorMon1 ) {
-        var doorAlarm1 = false;      
-        doorAlarm1 = almCheckDoor( sData.door1, config.doorOpen );
-        series = 7;
-        //If alarm condition met, set this and send notification. 
-        if ( doorAlarm1 ) {
-            var condString = alarms1.doorString1 + " is open!";
-            alarms1.alarmLcdString = 'ALARM! ' + alarms1.doorString1;
-            var triggerRet = almTrigger( alarms1.doorTime1, alarms1.doorDur1, condString, alarms1, series );
-            if( triggerRet.trigger ) {
-                retVal = true;
-            } else {
-                alarms1.doorTime1 = triggerRet.timeStamp; 
-                retVal = false; 
-            };  
-        } else {
-            if( alarms1.autoclear ) {
-                alarms1.doorTime1 = 0;
-            }; 
-            retval = false;
-        };
-    }; 
-    // Check door2
-    if ( alarms1.doorMon2 ) {
-        var doorAlarm2 = false;      
-        doorAlarm2 = almCheckDoor( sData.door1, config.doorOpen );
-        series = 8;
-        //If alarm condition met, set this and send notification. 
-        if ( doorAlarm2 ) {
-            var condString = alarms1.doorString2 + " is open!";
-            alarms1.alarmLcdString = 'ALARM! ' + alarms1.doorString2;
-            var triggerRet = almTrigger( alarms1.doorTime2, alarms1.doorDur2, condString, alarms1, series );
-            if( triggerRet.trigger ) {
-                retVal = true;
-            } else {
-                alarms1.doorTime2 = triggerRet.timeStamp; 
-                retVal = false; 
-            };  
-        } else {
-            if( alarms1.autoclear ) {
-                alarms1.doorTime2 = 0;
-            }; 
-            retval = false;
-        };
-    }; 
-    return retVal;
-};          
- 
-//almCheckTemp: check if temp is out of range, if so, return true.
-function almCheckTemp( currentTemp, tempMax, tempMin ) {
-    var retVal = false;
-    if (currentTemp === NaN ) {
-        retVal = false;
-    } else {
-        if ( currentTemp > tempMax || currentTemp < tempMin ) {
-            retVal = true;
-        };
-    };
-    return retVal
-};
-
-//almCheckDoor: check to see if door is open, if so, return true.
-function almCheckDoor( doorVal, doorOpen ) {
-    retVal = false;
-    if ( doorVal >= doorOpen ) {
-        retVal = true;
-    };
-    return retVal;
-};
-
-
-//almTrigger: checks to see if condition has been true for duration setting. If true, sends notifications.
-function almTrigger( timeStamp, duration, condString, alarms2, series1 ) {
-    
-    //utils.log( timeStamp + " - Alarm Trigger test..." );
-    
-    var retVal = {
-        trigger: false,
-        timeStamp: timeStamp 
-    };
-    var timeNow = new Date();
-
-    //If timestamp is 0, add current time and return false, else evaluate time difference
-    if (timeStamp === 0) {
-        retVal.timeStamp = timeNow;
-        retVal.trigger = false;
-    } else {
-        var elapsed = utils.minutesElapsed( timeStamp, timeNow );
-        //utils.log( 'timeStamp: ' + Date.parse(timeStamp) + ' timeNow: ' + Date.parse(timeNow) + ' elapsed: ' + elapsed );
-        if ( elapsed >= duration ) {
-
-            //Mark which series is affected for plotting annotations 
-            //  0=DHT_T1, 1=DHT_H1, 2=DHT_T2, 3=DHT_H2, 4=OW1, 5=OW2, 6=Amps, 7=Door1, 8=Door2 
-            alarms2.alarmSeries = series1;
-
-            //Send info to utils
-            utils.log( timeStamp + ' - Alarm activated: ' + condString );
-             
-            //Activate hardware buzzer, if available
-
-            //Place condition into alarms2.alarmString along with timestamp
-            alarms2.alarmString = condString + ' (' + timeStamp + ')';
-            
-            //Update alarms.json
-            updateAlarms( 'update', config );
-           
-            //Update client with alarm.
-            alarms2.alarmSocket = 'trigger';
-
-            //Send email 
-            if ( alarms2.emailAddr1 !== '' ) {
-                var emService = alarms2.mailService;
-                var emUser = alarms2.mailUser;
-                var emPassword = alarms2.mailPass;
-                var emAddresses = (alarms2.emailAddr2 !=='') ? 
-                    ( alarms2.emailAddr1 + ', ' + alarms2.emailAddr2) : ( alarms2.emailAddr1);
-                var emSubject = 'CellarWarden Alarm Notification';
-                var emText = timeStamp + ' - ALARM Activated!\n' +
-                    config.configTitle + ': ' + condString; 
-                sendEmail( emService, emUser, emPassword, emAddresses, emSubject, emText );
-            };      
-
-            //Prevent retriggering alarm by setting condition time to 0.
-            retVal.timeStamp = 0; 
-            
-            //Suppress multiple emails. 
-            if( alarms.suppress ) {
-                // Turn off alarm checking to prevent multiple emails. Must be reactivated manually. 
-                alarms.alarmsOn = false;
-                //almClearAll( alarms ); 
-            };
-           
-            //Return true to show that alarm has been triggered.
-            retVal.trigger = true;
-        } else {
-            retVal.trigger = false;
-        };
-    };
-    return retVal;
-};
-
-//almClearAll: clears all alarm conditions by zeroing out the timestamps
-function almClearAll( almData ) {
-    utils.log( 'Clearing all active alarms...' );
-    //almData.alarmString = "";
-    almData.tempTime1 = 0;
-    almData.tempTime2 = 0;
-    almData.humiTime1 = 0;
-    almData.humiTime2 = 0;
-    almData.doorTime1 = 0;
-    almData.powerTime1 = 0;
-    almData.tempDurCount1 = 0;
-    almData.tempDurCount2 = 0;
-    almData.humiDurCount1 = 0;
-    almData.humiDurCount2 = 0;
-    almData.doorDurCount1 = 0;
-    almData.powerDurCount1 = 0;
-};
-
-//almCreateAlarmLogFile: creates alarm logfile if it does not exist.
-function almCreateAlarmLogFile() {
-    if (!utils.fileExists( alarmsLogFile ) ) {
-    	fs.writeFile( alarmsLogFile, "", function(err){
-    		if (err ) {
-    			utils.log('Unable to create alarms logfile ' + alarmsLogFile );
-    		} else {
-    		    utils.log('Created alarms logfile ' + alarmsLogFile );	
-    		};
-    	});
-    };
-};
-
-//almClearAlarmLogFile: clears out alarm logfile
-function almClearAlarmLogFile() {
-    //Overwrite alarms logfile by writing blank string.
-    fs.writeFile( alarmsLogFile, "", function(err) {
-        if (err) {
-            utils.log('Could not overwrite alarms logfile ' + alarmsLogFile );
-        } else {
-            utils.log('Cleared alarms logfile ' + alarmsLogFile );
-        };
-    });
-};
 
 //sendEmail: Sends emails using Nodemailer
 function sendEmail( emService, emUser, emPassword, emAddresses, emSubject, emText ) {
@@ -1413,7 +529,7 @@ function updateConfig( configAction ) {
                         } else {
                             utils.log('Config.json corrupted. Loading default config...' );
                         };
-                        almCreateAlarmLogFile();
+                        alm.almCreateAlarmLogFile( alarmsLogFile );
                         resetHardware();
                         resetCronJobs();
                     };
@@ -1424,7 +540,7 @@ function updateConfig( configAction ) {
                         utils.log('Could not write new configuration file ' + config.configFile);
                     } else {
                         utils.log('Wrote configuration file ' + config.configFile);
-                        almCreateAlarmLogFile();
+                        alm.almCreateAlarmLogFile( alarmsLogFile );
                         resetHardware();
                         resetCronJobs();
                     };
@@ -1439,7 +555,7 @@ function updateConfig( configAction ) {
                utils.log('Could not write new configuration file ' + config.configFile);
             } else {
                 utils.log('Wrote configuration file ' + config.configFile);
-               almCreateAlarmLogFile(); 
+               alm.almCreateAlarmLogFile( alarmsLogFile ); 
                resetHardware();
                resetCronJobs();
             };
@@ -1545,47 +661,6 @@ function resetCronJobs() {
 
 };
 
-//If client has updated alarms.json (or on startup), reload this file. Also, initialize alarm process.
-function updateAlarms( alarmsAction, cfg ) {
-    if ( alarmsAction == 'init' ) {
-        //Write config data to config file. If not present, make a new one.
-        fs.exists( alarmsFile, function(exists) {
-            if (exists) {                 //alarms file exists, so read it into config object
-                fs.readFile( alarmsFile, 'utf8', function(err, data) {
-                    if (err) {
-                        utils.log('Could not read alarm config file ' + alarmsFile );
-                    } else {
-                        if ( data.length > 0 ) {
-                            utils.log('Loaded alarms config from ' + alarmsFile );
-                            //alarms = JSON.parse( data );
-                            alarms = utils.mergeJsonProto( alarms, JSON.parse( data ) );
-                        } else {
-                            utils.log( 'Alarms file corrupted. Loading defaults...' );
-                        };
-                    };
-                });
-            } else {                     //alarms file does not exist, so make a new one
-                fs.writeFile( alarmsFile, JSON.stringify( alarms ), function(err) {
-                    if (err) {
-                        utils.log('Could not write new alarms configuration file ' + alarmsFile );
-                    } else {
-                        utils.log('Wrote new alarms configuration file ' + alarmsFile );
-                    };
-                });
-            };
-        });
-    } else {
-        //Overwrite alarms config file.
-        //utils.log( 'Updating '+ alarmsFile + "..." );
-        fs.writeFile( alarmsFile, JSON.stringify( alarms ), function(err) {
-            if (err) {
-               utils.log('Could not update alarms configuration file ' + alarmsFile );
-            } else {
-                utils.log('Updated alarms configuration file ' + alarmsFile );
-            };
-        });
-    };
-};
 
 //updateControllers() - loads or saves controllers.json controller config on startup or config change.
 function updateControllers( ctrlAction ) {
@@ -1755,6 +830,7 @@ process.on('SIGINT', function() {
     //process.exit();
 });
 
+
 // If process is terminated, free resources, turn off all actuators and exit.
 process.on('SIGTERM', function() {
     utils.log( 'CellarWarden is shutting down after termination signal received (SIGTERM).', 'white', true );
@@ -1762,7 +838,10 @@ process.on('SIGTERM', function() {
     //process.exit();
 });
 
-//Deal with uncaught exceptions...
-process.on( 'uncaughtException', function( err ) {
-  utils.log( 'ERROR: Caught exception in CellarWarden: ' + err, 'red', true );
-});
+
+if ( cwDEBUG == false ) {
+    //Deal with uncaught exceptions...
+    process.on( 'uncaughtException', function( err ) {
+        utils.log( 'ERROR: Caught exception in CellarWarden: ' + err, 'red', true );
+    });
+};    

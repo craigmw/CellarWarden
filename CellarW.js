@@ -3,7 +3,7 @@
 //CellarW.js is main server file. Client files are index.html and ...
 //Inspiration from https://github.com/evgkib/RaspberryPi-temp, brewpi.com, etc.
 
-var cwVersion = "1.0.1";  //CellarWarden version.
+var cwVersion = "1.0.2";  //CellarWarden version.
 var cwDEBUG = false;      //Debugging mode? If true, suppresses error catching and allows crash.
 
 //Dependencies
@@ -74,6 +74,7 @@ var alarmsLogFile = dirName + '/public/alarmsLog.csv';
 var alarms = alm.alm( dirName, alarmsFile, alarmsLogFile );
 
 //******Global variables******
+var payLoad = null;           //Use to return multiple variables from a function.
 var sampleRate = 2000;        //Number milliseconds between sensor reads
 //var gpioInput1 = false;
 //var gpioInput2 = false;
@@ -152,7 +153,7 @@ setInterval(function(){
 
     //Reject extreme values if they exceed threshold
     if ( config.rejectExtremes ) {
-        sensorData = sensors.rejectExtremes( sensorData, config, rejectData );
+        sensorData = sensors.rejectExtremes( sensorData, rejectData, config );
     };
    
     //Process sensorData for display on LCD screen and client
@@ -164,15 +165,17 @@ setInterval(function(){
     }; 
 
     //Sum data if logAveraging true
-    if (config.logAveraging ) {
-        sumData = log.sumAllData( sensorData, sumData, sumCount );
-        sumCount += 1;
+    if ( config.logAveraging ) {
+        payLoad = log.sumAllData( sensorData, sumData, sumCount );
+        sumData = payLoad.sumData;
+        sumCount = payLoad.sumCount;
     };
 
     //Send sensorData to logfile after logIncrement reads has elapsed; also check for alarm conditions.
-    var retVal = log.writeToLogfile( sensorData, logData, sumData, sumCount, logLast, alarms, config, writeToLog, logFileDirectory, logFileWritten, alarmsLogFile );
-    logLast = retVal.logLast;
-    logFileWritten = retVal.logFileWritten;
+    payLoad = log.writeToLogfile( sensorData, logData, sumData, sumCount, logLast, alarms, config, writeToLog, logFileDirectory, logFileWritten, alarmsLogFile );
+    logLast = payLoad.logLast;
+    logFileWritten = payLoad.logFileWritten;
+    sumCount = payLoad.sumCount;
 
 
     //Process controllers (if on).

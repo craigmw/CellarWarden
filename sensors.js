@@ -190,7 +190,9 @@ module.exports.getSensorData = function(data, config ) {
     return( data );	       
 };
 
-function rejectExtremes( data, thresh ) {
+module.exports.rejectExtremes = function( data, rejectData, config ) {
+
+	var thresh = config.rejectThreshold;
     //Only process if rejectData.time1 != 0 so we only work with real data
     if (rejectData.time1 !== 0 ) {
         data.temp1 = detectExtremes( data.temp1, rejectData.temp1, thresh, "temp1" );

@@ -40,10 +40,11 @@ module.exports.sumAllData = function( data, aData, sumCount ) {
         aData.onew7 = getSum( data.onew7, aData.onew7 );
         aData.onew8 = getSum( data.onew8, aData.onew8 );
         aData.amps = getSum( data.amps, aData.amps );
+        
     };
 
-    //utils.log( aData.time1 + ": data.temp1: " + data.temp1 + " aData.temp1: " + aData.temp1 + " sumCount: " + sumCount );
-    return aData;
+    sumCount++;  //Increment the sumCount to reflect new sum added.
+    return {sumData: aData, sumCount: sumCount };
 };
 
 function getSum( newValue, sumValue ) {
@@ -85,11 +86,10 @@ module.exports.writeToLogfile = function(sensorData1, logData1, sumData, sumCoun
             sensorData1.onew6 = avgVals( sumData.onew6, sumCount);
             sensorData1.onew7 = avgVals( sumData.onew7, sumCount);
             sensorData1.onew8 = avgVals( sumData.onew8, sumCount);
-            //Add the rest of the one wire sensors here...
             sensorData1.amps = avgVals( sumData.amps, sumCount);
             //don't change sensorData.door1
-            sumCount = 0;
         };
+        sumCount = 0;
             
         //Check for alarm conditions and send notification(s) if true.
         //utils.log( 'alarmsOn: ' + alarms.alarmsOn + '  tempTime1: ' + alarms.tempTime1 );
@@ -125,7 +125,7 @@ module.exports.writeToLogfile = function(sensorData1, logData1, sumData, sumCoun
         //Set this flag to true to send sockets to client.
         logFileWritten = true;
     };
-    return ( { logLast: logLast1, logFileWritten: logFileWritten } ); 
+    return { logLast: logLast1, logFileWritten: logFileWritten, sumCount: sumCount }; 
 };
 
 function avgVals( sumVal, sCount ) {

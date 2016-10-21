@@ -469,7 +469,7 @@
             } else {
                 $("input:radio[id=cfgRejectID]:nth(1)").attr( "checked", true);
             };
-            $( "#cfgRejThrID" ).spinner( {min: 0, max: 50, step: 2} );
+            $( "#cfgRejThrID" ).spinner( {min: 0, max: 100, step: 2} );
             $( "#cfgRejThrID" ).spinner( "value", ( newData.rejectThreshold) );
             $( "#cfgShowTooltipsID" ).prop("checked", newData.showTooltips );
         

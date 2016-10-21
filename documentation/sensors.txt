@@ -17,8 +17,9 @@ var sensorList: [
 	    sensorType: sensor type (DS18B20, DHT11/22/AM2302, GPIO pin, Brewometer, SensorTag, generic analog input, etc)
 	    sensorName: Text to describe sensor
 	    sensorShortName: Text to display describing sensor on LCD display
+	    sensorPollingTime: Rate at which to poll this sensor (e.g. every 3 seconds, etc)
 	    sensorAccess: {
-	        param1...
+	        param1...  //Describes method(s) to access this sensor. Custom for each sensor type.
 	    }
 	    sensorParam: [
 	        {... }
@@ -31,12 +32,15 @@ Note that each sensor type has a unique object associated with it. This object i
 
 sensorParam: {
 	paramName: name of sensor parameter
-	paramShortName: short name of parameter to display
+	paramShortName: short name of parameter for LCD display
 	paramReportUnits: units reported by sensor
-	paramConvertFormula: formula to convert to new units
-	paramUnits: converted units
-	paramUnitsShort: converted units shortened for lcd display
 	paramOffset: calibration offset to add to converted value
 	paramStart: start byte to extract from sensor string (e.g. bluetooth)
-	paramEnd: end byte to extract from sensor string 
+	paramEnd: end byte to extract from sensor string (e.g. bluetooth)
 }
+
+Each sensor type will have an associated "driver." The driver will contain a prototype of the sensor object (as described above), along with the following routines:
+
+1. Configure - custom info about how to configure this sensor, including auto-find routines to list available sensors of this type.
+2. Initialize - routine to initialize sensor when CellarWarden first starts, or when the sensor configuration has been updated.
+3.  

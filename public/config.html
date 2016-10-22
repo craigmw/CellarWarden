@@ -620,8 +620,14 @@
             $( "#cfgOneWireDevicesSearchID" ).button().click( function( event ) {
                 event.preventDefault();
                 //Remove all elements from dropdown to prevent duplicaton of options
-                $( "#cfgOneWireId1ID" ).destroy();
-                $( "#cfgOneWireId2ID" ).destroy();
+                $( "#cfgOneWireId1ID" ).empty();
+                $( "#cfgOneWireId2ID" ).empty();
+                $( "#cfgOneWireId3ID" ).empty();
+                $( "#cfgOneWireId4ID" ).empty();
+                $( "#cfgOneWireId5ID" ).empty();
+                $( "#cfgOneWireId6ID" ).empty();
+                $( "#cfgOneWireId7ID" ).empty();
+                $( "#cfgOneWireId8ID" ).empty();
                 socket.emit( "loadOwDevices", newData );
                 
             });

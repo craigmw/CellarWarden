@@ -343,6 +343,7 @@ io.sockets.on('connection', function( socket ){
     //loadOwDevices: receive request for OneWire device list
     socket.on( 'loadOwDevices', function (configPassed ) {
         config = JSON.parse( JSON.stringify( configPassed ) );
+        utils.log( 'loadOwDevices socket received...');
         OWsensor.list(function (err, listOfDeviceIds) {
             config.oneWireDevices = listOfDeviceIds;
         });

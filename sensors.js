@@ -223,7 +223,7 @@ module.exports.rejectExtremes = function( data, rejectData, config ) {
         rejectData.onew8 = data.onew8;
     };
     rejectData.time1 = data.time1;
-    return data;
+    return ( { sensorData : data, rejectData: rejectData } );
 };
 
 function detectExtremes( newData, oldData, thresh, varName ) {

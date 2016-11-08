@@ -149,11 +149,13 @@ setInterval(function(){
     currTime = new Date();
 
     //Load sensor data into JSON object sensorData
-    sensors.getSensorData( sensorData, config );
+    sensorData = sensors.getSensorData( sensorData, config );
 
     //Reject extreme values if they exceed threshold
     if ( config.rejectExtremes ) {
-        sensorData = sensors.rejectExtremes( sensorData, rejectData, config );
+        var payLoad = sensors.rejectExtremes( sensorData, rejectData, config );
+        sensorData = payLoad.sensorData;
+        rejectData = payLoad.rejectData;
     };
    
     //Process sensorData for display on LCD screen and client
@@ -639,6 +641,8 @@ function resetHardware() {
             };
         });
     };
+
+    //Shut down all actuators.
 };  
 
 //resetCronJobs: Sets up or resets cron to run jobs at specified times.

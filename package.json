@@ -1,6 +1,6 @@
 {
   "name": "CellarWarden",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Monitors/controls wine cabinet or cellar temperatures and humidity. Now adds temp/humidity control.",
   "main": "CellarW.js",
   "scripts": {

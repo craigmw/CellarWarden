@@ -17,7 +17,9 @@ var sensorList: [
 	    sensorType: sensor type (DS18B20, DHT11/22/AM2302, GPIO pin, Brewometer, SensorTag, generic analog input, etc)
 	    sensorName: Text to describe sensor
 	    sensorShortName: Text to display describing sensor on LCD display
-	    sensorPollingTime: Rate at which to poll this sensor (e.g. every 3 seconds, etc)
+	    sensorPollingRate: Rate at which to poll this sensor in seconds (e.g. every 3 seconds, etc)
+	    sensorBattery: Sensor powered by a battery (for monitoring charge)
+	    sensorBatteryPollingRate: Rate at which to poll sensor's battery charge in minutes
 	    sensorAccess: {
 	        param1...  //Describes method(s) to access this sensor. Custom for each sensor type.
 	    }
@@ -27,10 +29,10 @@ var sensorList: [
 	}    
 }
 
-Note that each sensor type has a unique object associated with it. This object is generated in each driver file. Access can also be by polling or event driven. In case of event driven sensor, change in state leads to a program update (e.g. opening door switch activates backlight pin, etc).
+Note that each sensor type has a unique object associated with it. This object is generated in each "driver" file. Access can also be by polling or event driven. In case of event driven sensor, change in state leads to a program update (e.g. opening door switch activates backlight pin, etc).
 
 
-sensorParam: {
+sensorParam: { //Each sensor can have multiple parameters.
 	paramName: name of sensor parameter
 	paramShortName: short name of parameter for LCD display
 	paramReportUnits: units reported by sensor

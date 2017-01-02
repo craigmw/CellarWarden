@@ -106,9 +106,9 @@ function tpTimerWindow( ctrls, i, actType ) {
 
                 //Turn off actuator.
                 act.setActuator( ctrls, p, actType, false, false );
-                if ( ctrls[p].cfg.coolDelay > 0 ) act.setDelay( ctrls, p, 'cool');
 
                 //Activate cool delay if need be.
+                if ( ctrls[p].cfg.coolDelay > 0 ) act.setDelay( ctrls, p, 'cool');
             };
             if ( actType1 == 'heat' && ctrls[p].heatOn == true ) {
 

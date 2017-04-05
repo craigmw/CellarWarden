@@ -374,8 +374,9 @@
         //Plot out chart
         var g2 = new Dygraph(
             document.getElementById("graphdiv2"),
-            "../logfile.csv", { 
-                labelsDiv: document.getElementById('legend-containerID'),
+            "../logfile.csv", {
+            //"", { 
+            	labelsDiv: document.getElementById('legend-containerID'),
                 title: "Temperature and Humidity",
                 labels: chartLabels, 
                 colors: chartColors,
@@ -1121,14 +1122,14 @@
                 //legend: 'always',
                 labelsSeparateLines: true,
                 series: {
-                    Heating: { fillGraph: false, axis: 'y2' },
-                    Cooling: { fillGraph: false, axis: 'y2' }
+                    Heating: { fillGraph: true, axis: 'y2' },
+                    Cooling: { fillGraph: true, axis: 'y2' }
                 },
                 axes: {
                 	y2: {
-                	    valueRange: [0, 300],
+                	    valueRange: [0, 100],
                         axisLabelFormatter: function(y2) {
-                            return "" //Number( y2.toFixed() ) 
+                            return Number( y2.toFixed() ) 
                         }    
                 	}    
                 }

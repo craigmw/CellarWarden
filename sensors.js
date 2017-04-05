@@ -1,4 +1,5 @@
 //sensors.js - Gathers sensor data for CellarWarden
+var utils = require('./utils.js');
 
 //node_modules
 var sensorLib = require('node-dht-sensor');
@@ -10,8 +11,14 @@ var justify = require('justify');
 //local variables
 var gpioInput1 = false;
 var gpioInput2 = false;
+var tempLowC = -20;             //Low range for temp sensors in celcius
+var tempHighC = 100;            //Hi range for temp sensors in celcius
+var tempLowF = tempLowC * 9/5 + 32;
+var tempHighF = tempHighC * 9/5 + 32;
+var tempLow = 0;
+var tempHigh = 0;
 
-exports.sensorData = {            //sensorData object; used to retrieve, print and log sensor data
+exports.sensorData = {         //sensorData object; used to retrieve, print and log sensor data
     time1: 0,
     temp1: NaN,                //First DHT
     humi1: NaN, 
@@ -33,6 +40,13 @@ exports.sensorData = {            //sensorData object; used to retrieve, print a
 //Get sensor data and pack into sensorData JSON object
 module.exports.getSensorData = function(data, config ) {
 	var tempScale1 = config.tempScale;
+	if (tempScale1 = 'F' ) {
+		tempLow = tempLowF;
+		tempHigh = tempHighF;
+	} else {
+		tempLow = tempLowC;
+		tempHigh = tempHighC;
+	};
     
     //Read DHT sensor(s)
     if (config.DHTtype1 === 11 || config.DHTtype1 === 22) {
@@ -66,6 +80,7 @@ module.exports.getSensorData = function(data, config ) {
             } else { 
                 data.onew1 = OWtemp + config.DS18offset1;
             };
+            if ( err ) { data.onew1 = NaN };
         });
     } else {
         data.onew1 = NaN;
@@ -77,6 +92,7 @@ module.exports.getSensorData = function(data, config ) {
             } else { 
                 data.onew2 = OWtemp + config.DS18offset2;
             };
+            if ( err ) { data.onew2 = NaN };
         });
     } else {
         data.onew2 = NaN;
@@ -88,6 +104,7 @@ module.exports.getSensorData = function(data, config ) {
             } else { 
                 data.onew3 = OWtemp + config.DS18offset3;
             };
+            if ( err ) { data.onew3 = NaN };
         });
     } else {
         data.onew3 = NaN;
@@ -99,6 +116,7 @@ module.exports.getSensorData = function(data, config ) {
             } else { 
                 data.onew4 = OWtemp + config.DS18offset4;
             };
+            if ( err ) { data.onew4 = NaN };
         });
     } else {
         data.onew4 = NaN;
@@ -110,6 +128,7 @@ module.exports.getSensorData = function(data, config ) {
             } else { 
                 data.onew5 = OWtemp + config.DS18offset5;
             };
+            if ( err ) { data.onew5 = NaN };
         });
     } else {
         data.onew5 = NaN;
@@ -121,6 +140,7 @@ module.exports.getSensorData = function(data, config ) {
             } else { 
                 data.onew6 = OWtemp + config.DS18offset6;
             };
+            if ( err ) { data.onew6 = NaN };
         });
     } else {
         data.onew6 = NaN;
@@ -132,6 +152,7 @@ module.exports.getSensorData = function(data, config ) {
             } else { 
                 data.onew7 = OWtemp + config.DS18offset7;
             };
+            if ( err ) { data.onew7 = NaN };
         });
     } else {
         data.onew7 = NaN;
@@ -143,6 +164,7 @@ module.exports.getSensorData = function(data, config ) {
             } else { 
                 data.onew8 = OWtemp + config.DS18offset8;
             };
+            if ( err ) { data.onew8 = NaN };
         });
     } else {
         data.onew8 = NaN;
@@ -192,6 +214,8 @@ module.exports.getSensorData = function(data, config ) {
 
 module.exports.rejectExtremes = function( data, rejectData, config ) {
 
+	//utils.log('Inside rejectExtremes...')
+
 	var thresh = config.rejectThreshold;
     //Only process if rejectData.time1 != 0 so we only work with real data
     if (rejectData.time1 !== 0 ) {
@@ -223,17 +247,26 @@ module.exports.rejectExtremes = function( data, rejectData, config ) {
         rejectData.onew8 = data.onew8;
     };
     rejectData.time1 = data.time1;
-    return ( { sensorData : data, rejectData: rejectData } );
+    return ( { sensorData: data, rejectData: rejectData } );
 };
 
 function detectExtremes( newData, oldData, thresh, varName ) {
-	//if ( isNaN( oldData ) ) return NaN;
+
+	//utils.log('Inside detectExtremes: ' + varName );
+	if ( isNaN( newData ) ) return NaN;
     if ( Math.abs( newData - oldData ) > thresh ) {
         utils.log( utils.getDateTime() + " - Rejected " + varName + " newData: " + newData + " oldData: " + oldData + " threshold: " + thresh ); 
         newData = NaN; //oldData;
     } else {
         oldData = newData;
     };
+
+    //Check to see that temp is in range, otherwise, give NaN.
+    if ( ( newData < tempLow ) || ( newData > tempHigh ) ) {
+    	utils.log( utils.getDateTime() + " - Rejected " + varName + " newData: " + newData +" is out of range." );
+    	newData = NaN;    	
+    };
+
     return newData;
 };
 

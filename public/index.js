@@ -1,7 +1,7 @@
 //index.js - main javascript for CellarWarden client.        
 
         //var showConfig = "initConfig is here";
-        var clientConfig;        //Client side copy of config object retrieved from server.
+        var clientConfig = {};   //Client side copy of config object retrieved from server.
         var returnConfig;        //Temp config data returned by config dialog.
         var clientAlarms;        //Client side alarm config
         var returnAlarms;        //Temp alarm config data returned by alarms dialog.
@@ -234,7 +234,7 @@
                 axisLabelFontSize: 14,
                 rollPeriod: rollPeriod,
                 showRoller: true,
-                ylabel: 'Temp or RH (%)',
+                //ylabel: 'Temp or RH (%)',
                 xlabel: 'Time',
                 highlightCircleSize: 2,
                 /* highlightSeriesOpts: {
@@ -939,8 +939,9 @@
         var ctrlTitle = clientCtrls[currIndex].cfg.type == 'TEMP' ? 'Temperature vs. Output' : 'Humidity vs. Output';
         var ctrlChartLabels = ['Time','Input','Setpoint','Heating','Cooling'];
         var ctrlChartColors = [ 'rgb(0,0,0)', 'rgb(10,204,23)', 'rgb(252,121,136)', 'rgb(0,236,252)' ];
-        //var ctrlTitle = ( clientCtrls[currIndex].cfg.type == 'TEMP' ) ? 'Temperature' : 'Humidity'; 
         var ctrlXlabel = 'Time'; 
+        var ctrlYLabel = clientCtrls[currIndex].cfg.type == 'TEMP' ? 'Temp (' + clientConfig.tempScale + ')' : ' RH (%)'; 
+        //alert('Debug', 'Y-axis label is:' + ctrlYlabel );
         
         g4 = new Dygraph(
             document.getElementById("ctrl-graph-areaID"),
@@ -959,7 +960,7 @@
                 axisLabelFontSize: 14,
                 rollPeriod: 1,
                 showRoller: true,
-                ylabel: 'Temp or RH (%)',
+                ylabel: ctrlYLabel,
                 y2label: 'Output (%)',
                 xlabel: ctrlXlabel,
                 highlightCircleSize: 2,
@@ -971,7 +972,7 @@
                 },
                 axes: {
                 	y2: {
-                	    valueRange: [0, 300],
+                	    valueRange: [0, 100],
                         axisLabelFormatter: function(y2) {
                             return "" //Number( y2.toFixed() ) 
                         }    
@@ -987,7 +988,7 @@
         var ctrlFileName = './controls/' + clientCtrls[currIndex].cfg.logFileName;
         if (g4 ) {
             g4.updateOptions({
-                file: ctrlFileName
+                file: ctrlFileName               
             });
         };
     };

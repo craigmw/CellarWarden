@@ -40,7 +40,7 @@ exports.sensorData = {         //sensorData object; used to retrieve, print and 
 //Get sensor data and pack into sensorData JSON object
 module.exports.getSensorData = function(data, config ) {
 	var tempScale1 = config.tempScale;
-	if (tempScale1 = 'F' ) {
+	if (tempScale1 == 'F' ) {
 		tempLow = tempLowF;
 		tempHigh = tempHighF;
 	} else {

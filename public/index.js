@@ -967,14 +967,14 @@
                 //legend: 'always',
                 labelsSeparateLines: true,
                 series: {
-                    Heating: { fillGraph: false, axis: 'y2' },
-                    Cooling: { fillGraph: false, axis: 'y2' }
+                    Heating: { fillGraph: true, axis: 'y2' },
+                    Cooling: { fillGraph: true, axis: 'y2' }
                 },
                 axes: {
                 	y2: {
                 	    valueRange: [0, 100],
                         axisLabelFormatter: function(y2) {
-                            return "" //Number( y2.toFixed() ) 
+                            return Number( y2.toFixed() ) 
                         }    
                 	}    
                 }

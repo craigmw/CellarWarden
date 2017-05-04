@@ -919,8 +919,8 @@ Ctrl.prototype.processPID = function( ctrls, i ) {
         if ( pidCompute ) {
             ctrls[i].output = ctrls[i].PID.getOutput();
         } else {
-            ctrls[i].output = 0;
-            utils.log( 'ctrls[i].output: ' + ctrls[i].output );
+            //ctrls[i].output = 0;
+            //utils.log( 'ctrls[i].output: ' + ctrls[i].output );
         };
     } else {
         //Set flag that autotuning is on.

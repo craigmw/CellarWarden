@@ -23,10 +23,10 @@ var PID = function(Input, Setpoint, Kp,  Ki, Kd, ControllerDirection) {
     this.inAuto = false;
 	
     this.setOutputLimits(0, 255);				//default output limit corresponds to //the arduino pwm limits
-    this.SampleTime = 100;					//default Controller Sample Time is 0.1 seconds
+    this.SampleTime = 100;					    //default Controller Sample Time is 0.1 seconds
     this.setControllerDirection(ControllerDirection);
     this.setTunings(Kp, Ki, Kd);
-    this.lastTime = this.millis()-this.SampleTime;		
+    this.lastTime = this.millis() - this.SampleTime;		
     this.ITerm=0;
     this.myOutput=0;
 };
@@ -61,14 +61,15 @@ PID.prototype.compute = function() {
     if(!this.inAuto) return false;
     if( this.input === null ) return false;
     var now = this.millis();
-    var timeChange = (now - this.lastTime);
+    var timeChange = ( now - this.lastTime );
     var tError = timeChange - this.SampleTime;
 
     //Update sampleTime based on timeChange.
     //this.setSampleTime( timeChange );
     //this.setTunings( this.kp, this.ki, this.kd );
     //console.log( 'Loop time: ' + timeChange + '\tTiming error: ' + tError );
-    if(timeChange>=this.SampleTime) {
+    //console.log( 'timeChange: ' + timeChange + '\t this.SampleTime: ' + this.SampleTime );
+    if( timeChange >= this.SampleTime ) {
         /*Compute all the working error variables*/
         var input = this.input;
         var error = this.mySetpoint - input;

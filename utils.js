@@ -139,6 +139,8 @@ exports.daysElapsedFloat = function( time1, time2 ) {
     return retVal;
 };
 
+
+//Misc. functions.
 //log() - make a nicer console.log.
 //  text - text to print
 //  color - color string
@@ -224,6 +226,7 @@ exports.log = function( text, color, timestamp, emit ) {
     */        
 }; 
 
+//File functions.
 //fileExists() - checks for existence of file.
 //  filename - name of file (including path)
 //  returns - true (file exists) or false (file does not exist)
@@ -252,6 +255,7 @@ exports.deleteFile = function( fileName, callback ) {
     });
 };
 
+// Numerical functions
 //minMax() - returns a number within a range between min and max
 //  value - number
 //  min - minimum value to return
@@ -264,3 +268,15 @@ exports.minMax = function( value, min, max ) {
     return retVal;
 };
 
+//rollAvg() - Calculate rolling average. Provide the average and the new sample.
+//  avg = previous average
+//  newSample = new sample value
+//  rollWindow = number of samples to average over
+//  returns new average
+function rollAvg( avg, newSample, rollWindow ) {
+
+    avg -= avg / rollWindow;
+    avg += newSample / rollWindow;
+
+    return avg;
+};

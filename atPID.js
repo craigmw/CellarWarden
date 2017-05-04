@@ -94,7 +94,7 @@ PID_ATune.prototype.Runtime = function() {
         if( refVal < absMin ) absMin = refVal;
 	};
 	
-    //oscillate the output base on the input's relation to the setpoint
+    //oscillate the output based on the input's relation to the setpoint
     if( refVal > setpoint + this.noiseBand ) {
         this.output = outputStart - this.oStep;
 	} else if ( refVal < setpoint - this.noiseBand ) {

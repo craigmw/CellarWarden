@@ -3,7 +3,7 @@
 //CellarW.js is main server file. Client files are index.html and ...
 //Inspiration from https://github.com/evgkib/RaspberryPi-temp, brewpi.com, etc.
 
-var cwVersion = "1.0.2";  //CellarWarden version. Test5.
+var cwVersion = "1.0.3";  //CellarWarden version. 
 var cwDEBUG = false;      //Debugging mode? If true, suppresses error catching and allows crash.
 
 //Dependencies

@@ -16,8 +16,7 @@ var VERBOSE = false;
 var antiWindUP = true;  //Reset limiting flag. Prevents ITerm windup by blocking accumulation if output 0 or 100%.
 
  
-var PID = function(Input, Setpoint, Kp,  Ki, Kd, ControllerDirection) {
-    //this.myOutput = Output;
+var PID = function(Input, Setpoint, Kp,  Ki, Kd, ControllerDirection, lastTime, iTerm, Output ) {
     this.input = Input;
     this.mySetpoint = Setpoint;
     this.inAuto = false;
@@ -27,8 +26,8 @@ var PID = function(Input, Setpoint, Kp,  Ki, Kd, ControllerDirection) {
     this.setControllerDirection(ControllerDirection);
     this.setTunings(Kp, Ki, Kd);
     this.lastTime = this.millis() - this.SampleTime;		
-    this.ITerm=0;
-    this.myOutput=0;
+    this.ITerm = ( iTerm !== null ? iTerm : 0 );
+    this.myOutput = ( Output !== null ? Output : 0 );
 };
 
 //constants

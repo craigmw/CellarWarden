@@ -670,10 +670,22 @@ Ctrl.prototype.findSetpoint = function( ctrls, index ) {
 //  ctrls - array of controller objects
 //  i - index of current controller
 Ctrl.prototype.pidInit = function( ctrls, i ) {
-    if ( ( ctrls[i].cfg.coolCtrlMode == 'PID' ) || ( ctrls[i].cfg.heatCtrlMode == 'PID' ) ) {  
-        utils.log( 'Setting up PID for controller ' + i + ' (' + ctrls[i].cfg.name +')...', 'green', false, false );        
+    if ( ( ctrls[i].cfg.coolCtrlMode == 'PID' ) || ( ctrls[i].cfg.heatCtrlMode == 'PID' ) ) { 
+        //Save previous values if they exist.
+        var lastTime = new Date();
+        var iTerm = 0;
+        var myOutput = 0;
+        var pidStatus = 'Setting up '; 
+        if ( ctrls[i].PID !== null ) {
+            lastTime = ctrls[i].PID.lastTime;
+            iTerm = ctrls[i].PID.iTerm;
+            myOutput = ctrls[i].PID.myOutput;
+            pidStatus = 'Resuming ' 
+        };
+        utils.log( pidStatus + 'PID for controller ' + i + ' (' + ctrls[i].cfg.name +')...', 'green', false, false );        
         //Setup PID for heating. Will change this in processActuators().
-        ctrls[i].PID = new PID( ctrls[i].input, ctrls[i].currSetpoint, ctrls[i].cfg.heatKp, ctrls[i].cfg.heatKi, ctrls[i].cfg.heatKd, PID.DIRECT );
+        ctrls[i].PID = new PID( ctrls[i].input, ctrls[i].currSetpoint, ctrls[i].cfg.heatKp, ctrls[i].cfg.heatKi, ctrls[i].cfg.heatKd, 
+            PID.DIRECT, lastTime, iTerm, myOutput );
         ctrls[i].PID.setMode( PID.AUTOMATIC );
         ctrls[i].PID.setControllerDirection( PID.DIRECT );
         ctrls[i].PID.setOutputLimits( -100, 100 );
@@ -1116,6 +1128,7 @@ function manualModeOff( ctrls, i ) {
     //Check for state change from manual to automatic.
     if ( ctrls[i].PID.getMode() == PID.MANUAL ) {
         //Switch PID back to automatic mode.
+        ctrls[i].PID.initialize();
         ctrls[i].PID.setMode( PID.AUTOMATIC );
 
         tpTimer.tpTimerKill( ctrls, i );

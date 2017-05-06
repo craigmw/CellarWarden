@@ -45,7 +45,7 @@ client app is handled by Javascript.&nbsp;</p>
 <h2><br>
 <a id="user-content-web-app" class="anchor" href="#web-app" aria-hidden="true"><span class="octicon octicon-link"></span></a></h2>
 <h2>Web App</h2>
-<p><a href="https://github.com/craigmw/CellarWarden/blob/master/public/help/CellarWardenGrab.jpg"><img style="border: 0px solid ; width: 1000px; height: 685px;" alt="Cellar Warden Overview" src="/public/help/MainSensors.jpg"></a><a href="https://github.com/craigmw/CellarWarden/blob/master/public/help/CellarWardenGrab.jpg" target="_blank"><br>
+<p><a href="https://github.com/craigmw/CellarWarden/blob/master/public/help/MainSensors.jpg"><img style="border: 0px solid ; width: 1000px; height: 685px;" alt="Cellar Warden Overview" src="/public/help/MainSensors.jpg"></a><a href="https://github.com/craigmw/CellarWarden/blob/master/public/help/MainSensors.jpg" target="_blank"><br>
 </a></p>
 <p>CellarWarden is a client/server application, with a Node.js
 server

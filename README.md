@@ -2,8 +2,7 @@
 <html><head>
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="./help_styles.css">
-<style>
-</style><title>Overview</title></head>
+</head>
 <body>
 <h2><a id="user-content-overview" class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h2>
 <p>CellarWarden is an application that runs on the Raspberry Pi

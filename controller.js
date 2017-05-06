@@ -6,7 +6,6 @@ var fs = require( 'fs' ); //Read and write controllers to file.
 var PID = require('./pid.js');
 var atPID = require('./atPID.js');
 var autoTune = require('./autotune.js');
-var gpio = require('rpi-gpio');
 var utils = require('./utils.js');
 var tprof = require('./tprofiles.js');
 var act = require('./actuators.js');

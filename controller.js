@@ -34,6 +34,7 @@ var st_atCOOL =    12;
 var st_atHEAT =    13;
 var st_MANCOOL =   14;
 var st_MANHEAT =   15;
+var st_INIT =      16;
 
 var st_name = [];
 st_name[0] = 'Off';
@@ -48,10 +49,12 @@ st_name[8] = 'Humidifying';
 st_name[9] = 'Waiting to Humidify';
 st_name[10] = 'Paused';
 st_name[11] = 'Resetting';
-st_name[12] = 'Cool Autotuning'
-st_name[13] = 'Heat Autotuning'
-st_name[14] = 'Manual Cooling'
-st_name[15] = 'Manual Heating'
+st_name[12] = 'Cool Autotuning';
+st_name[13] = 'Heat Autotuning';
+st_name[14] = 'Manual Cooling';
+st_name[15] = 'Manual Heating';
+st_name[16] = 'Initializing';
+
 exports.st_name = st_name;
 
 var st_marker =   100; //Height of state marker in logfile. Need to adjust for Fahrenheit vs. Celsius. Or, use 
@@ -424,6 +427,12 @@ Ctrl.prototype.process = function( ctrls, sensorData, logIncrement ) {
             //May need to reset this controller.
         };
 
+        //Check to see if this controller needs to be reset because it is initializing during first loop.
+        if ( ctrls[i].currState == st_INIT ) {
+            this.resetCtrl( ctrls, i );
+            ctrls[i].currState = st_IDLE;
+        };
+
         //Only process active controllers. 
         if ( ctrls[i].isActive == true ) {
 
@@ -510,7 +519,7 @@ Ctrl.prototype.initLoop = function( ctrls, i ) {
     };
 
     //Make controllers initialize.
-    ctrls[i].currState = st_RESET;
+    ctrls[i].currState = st_INIT;
     ctrls[i].cfg.rstGPIO = true;    //New
     ctrls[i].cfg.rstPID = true;     //New
     ctrls[i].cfg.rstProf = false;   //Don't initialize profile on startup to preserve state variables.

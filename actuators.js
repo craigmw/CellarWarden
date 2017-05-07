@@ -42,18 +42,23 @@ exports.gpioDigiInit = function( ctrls, i, actType ) {
     if (VERBOSE) { utils.log( 'Initializing gpio pin ' + pin + ' for output...', 'green', false, false ) };
     gpio.setup( pin, gpio.DIR_OUT, function( err ) {
         if ( err ) {
-            if (actType == 'cool' ) {
+            if ( actType == 'cool' ) {
                 ctrls[i].coolPinRegd = false;
             } else {
                 ctrls[i].heatPinRegd = false;
             };
             utils.log( 'Unable to initialize GPIO pin ' + pin + ' for output. ' + err, 'red', true, false );
         } else {
-            if (actType == 'cool' ) {
+            if ( actType == 'cool' ) {
                 ctrls[i].coolPinRegd = true;
+                //Set actuator to off.
+                gpioDigiWrite( ctrls, i, 'cool', false, false ); 
             } else {
                 ctrls[i].heatPinRegd = true;
+                //Set actuator to off.
+                gpioDigiWrite( ctrls, i, 'heat', false, false );
             };
+            utils.log( 'Initialized GPIO pin ' + pin + ' for output on controller ' + i + ' . ', 'green', false, false );
         }; 
     });  
     gpio.setMode( gpio.MODE_BCM );    
@@ -140,7 +145,7 @@ exports.setActuator = function( ctrls, i, actType, output, pwm ) {
 
     //utils.log( i + ': setActuator() - invert: ' + invert );
   
-    //If pin = '', ignore (no pin selected for this actuator)
+    //If pin == '', ignore (no pin selected for this actuator)
     if ( pin == '' ) {
         return true;
     };
@@ -224,7 +229,7 @@ exports.setDelay = function( ctrls, i, actType ) {
     return retVal;
 }; 
 
-//actuatorsOff - Turns off all actuator(s) of a selected control (used upon startup and when deleting controller).
+//actuatorsOff - Turns off all actuator(s) of a selected control (used when deleting controller).
 //  ctrls - array of controllers
 //  i - index of controller to shut off actuators
 //  returns true (no error) or false (error detected)

@@ -39,6 +39,7 @@ var st_atCOOL =    12;
 var st_atHEAT =    13;
 var st_MANCOOL =   14;
 var st_MANHEAT =   15;
+var st_INIT =      16;
 
 var st_name = [];
 st_name[0] = 'Off';
@@ -57,6 +58,7 @@ st_name[12] = 'Cool Autotuning'
 st_name[13] = 'Heat Autotuning'
 st_name[14] = 'Manual Cooling'
 st_name[15] = 'Manual Heating'
+st_name[16] = 'Initializing'
 
 //initializeLcd - initializes lcd hardware for display
 exports.initializeLcd = function( config, ctrls ) {

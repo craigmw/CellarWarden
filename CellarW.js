@@ -329,9 +329,24 @@ io.sockets.on('connection', function( socket ){
 
     //Receive request to reboot the RPi.
     socket.on( 'rebootRPi', function() {
+
         var args = 'shutdown -r now' 
         var exec = require( 'child_process' ).exec;
         var timeNow = new Date();
+
+        //Update the LCD to show rebooting status
+        lcdData = { 
+            lcdRow0: '',
+            lcdRow1: 'Rebooting server!',
+            lcdRow2: 'Please wait...',
+            lcdRow3: ''
+        };
+        io.sockets.emit('newsensordata', lcdData);
+        if (lcdHold === 0 && config.lcdExists ) {
+            display1.lcdUpdateScreen( lcdData, config, alarms, 0);
+        }; 
+
+        //Execute the reboot 
         utils.log( timeNow + ': Rebooting RPi...');
         var child = exec( args, [], function (err, stdout, stderr) {
             if ( err ) {

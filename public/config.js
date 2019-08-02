@@ -551,7 +551,7 @@ function validateConfigData( newData ) {
     newData.lcdCols = parseInt( $( "#cfgLcdColsID" ).val() );
     newData.lcdRows = parseInt( $( "#cfgLcdRowsID" ).val() );
     newData.lcdI2cBus = parseInt( $( "#cfgLcdI2cBusID").val() );
-    newData.lcdI2cAddress = parseInt( $( "#cfgLcdI2cAddressID" ).val() );            
+    newData.lcdI2cAddress = $( "#cfgLcdI2cAddressID" ).val();            
     newData.lcdRsPin = parseInt( $( "#cfgLcdRsPinID" ).val() );
     newData.lcdEPin = parseInt( $( "#cfgLcdEPinID" ).val() );
     newData.lcdBlPin = parseInt( $( "#cfgLcdBLPinID" ).val() );

@@ -69,7 +69,7 @@ exports.initializeLcd = function( config, ctrls ) {
                 cols: config.lcdCols, rows:config.lcdRows } );
             break;
         case 1:
-            var lcdI_address = parseInt( '0x' + config.lcdI2cAddress, 16 );
+            var lcdI_address =  '0x' + config.lcdI2cAddress;
             lcdI = new iLcd( config.lcdI2cBus, lcdI_address, config.lcdCols, config.lcdRows );
             if ( lcdI == null ) {
                 utils.log( 'Error: Unable to initiate hardware LCD panel at address 0x' + 
